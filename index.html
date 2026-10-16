@@ -840,16 +840,46 @@
                 return;
             }
 
-            // Puxa as questões específicas daquele dia (Sincronia Tática)
+            // Garante que o banco gigantesco procedural foi populado
+            if (!window.dbPopulated) {
+                populateMassiveDatabase();
+                window.dbPopulated = true;
+            }
+
+            // Puxa as questões específicas daquele dia conectando ao motor massivo
             currentQuizQuestions = [];
             modules.forEach(mod => {
-                if(mod.dailyQ) {
-                    mod.dailyQ.forEach(q => {
-                        let clone = JSON.parse(JSON.stringify(q));
-                        clone.text = `[Fixação Diária - ${mod.sub}] ${clone.text}`;
-                        currentQuizQuestions.push(clone);
-                    });
+                // Mapeia a disciplina do dia para o banco de dados gigante
+                let dbKey = mod.sub;
+                if (mod.sub.includes("Inform")) dbKey = "Informática Básica";
+                else if (mod.sub.includes("Portugu")) dbKey = "Língua Portuguesa";
+                else if (mod.sub.includes("Admin")) dbKey = "Administração e Atualidades";
+                else if (mod.sub.includes("Penal")) dbKey = "Direito Penal";
+                else if (mod.sub.includes("Legisla")) dbKey = "Legislação e Específicos";
+
+                let pool = baseQuizTemplates[dbKey] || [];
+                
+                // Embaralha o pool do assunto específico (Fisher-Yates) para garantir questões inéditas
+                let shuffledPool = JSON.parse(JSON.stringify(pool));
+                for (let i = shuffledPool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
                 }
+
+                // EXTRAI EXATAMENTE 10 QUESTÕES POR ASSUNTO (Total de 20 por noite)
+                let selectedQs = shuffledPool.slice(0, 10);
+                
+                selectedQs.forEach(base => {
+                    // Embaralha alternativas internamente para evitar decorar letras (A, B, C...)
+                    let optsWithAns = base.options.map((opt, idx) => ({ text: opt, isCorrect: idx === base.correct }));
+                    optsWithAns.sort(() => Math.random() - 0.5);
+                    base.options = optsWithAns.map(o => o.text);
+                    base.correct = optsWithAns.findIndex(o => o.isCorrect);
+                    
+                    // Adiciona o selo da Fixação Diária
+                    base.text = `<span class="text-yellow-500 font-tactical text-sm tracking-widest block mb-2">[Fixação Diária: ${mod.topic}]</span> ${base.text}`;
+                    currentQuizQuestions.push(base);
+                });
             });
 
             if(currentQuizQuestions.length === 0) {
@@ -857,7 +887,7 @@
                 return;
             }
 
-            // Randomizar as questões diárias para evitar decorar a ordem
+            // Randomizar as questões diárias misturando as duas matérias do dia (Treino de Troca de Contexto)
             currentQuizQuestions.sort(() => Math.random() - 0.5);
 
             currentQIndex = 0;
