@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operação GCM Trindade - Projeto Pedro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #f8fafc;
+        }
+        .font-tactical {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+        .skull-bg {
+            background-image: radial-gradient(circle at center, rgba(30, 41, 59, 0.85) 0%, #0f172a 100%), url('data:image/svg+xml;utf8,<svg opacity="0.03" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23ffffff" d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 464c-114.7 0-208-93.3-208-208S141.3 48 256 48s208 93.3 208 208S370.7 464 256 464zM176 224c-26.5 0-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48S202.5 224 176 224zM336 224c-26.5 0-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48S362.5 224 336 224zM256 368c-44.2 0-80-28.7-80-64h160C336 339.3 300.2 368 256 368z"/></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .pulse-gold { animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+        
+        /* Estilização para o PDF interno rico */
+        .pdf-content h1 { color: #1e293b; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 20px; text-transform: uppercase;}
+        .pdf-content h2 { color: #b91c1c; font-size: 1.4rem; font-weight: bold; margin-top: 30px; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;}
+        .pdf-content h3 { color: #0f172a; font-size: 1.2rem; font-weight: bold; margin-top: 20px; margin-bottom: 10px;}
+        .pdf-content p { margin-bottom: 15px; text-align: justify; }
+        .pdf-content ul { list-style-type: disc; margin-left: 20px; margin-bottom: 15px; }
+        .pdf-content li { margin-bottom: 8px; }
+        .pdf-content strong { color: #000; background-color: rgba(234, 179, 8, 0.3); padding: 0 4px; border-radius: 2px;}
+        .pdf-content blockquote { border-left: 4px solid #b91c1c; background-color: #f8fafc; padding: 15px; margin: 15px 0; font-style: italic; color: #334155;}
+    </style>
+</head>
+<body class="skull-bg min-h-screen pb-10">
+
+    <header class="border-b border-yellow-500/30 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center border-2 border-white shadow-[0_0_15px_rgba(234,179,8,0.5)]">
+                    <i class="fa-solid fa-shield-halved text-3xl text-slate-900"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-tactical text-yellow-500 tracking-wider">OPERAÇÃO GCM TRINDADE</h1>
+                    <p class="text-gray-300 font-semibold tracking-widest uppercase text-sm">Candidato: Pedro <span class="text-xs text-yellow-500 ml-2"><i class="fa-solid fa-crosshairs"></i> Reta Final Premium</span></p>
+                </div>
+            </div>
+            
+            <div class="glass-panel px-6 py-2 rounded-xl text-center border-yellow-500/50">
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Contagem Regressiva (5 Dez 2026)</p>
+                <div id="countdown" class="font-tactical text-2xl text-white tracking-widest">
+                    -- DIAS --:--:--
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Coluna Esquerda: Cronograma Evolutivo -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-center bg-slate-800 p-4 rounded-t-xl border-b-2 border-yellow-500 gap-4">
+                <h2 class="text-2xl font-tactical text-white"><i class="fa-solid fa-calendar-days text-yellow-500 mr-2"></i> Missões do Dia</h2>
+                <select id="daySelector" class="bg-slate-900 text-yellow-500 border border-yellow-500/50 rounded px-4 py-2 font-bold outline-none focus:ring-2 focus:ring-yellow-500 w-full sm:w-auto">
+                    <!-- Gerado dinamicamente via JS com datas reais -->
+                </select>
+            </div>
+
+            <div id="scheduleContainer" class="space-y-4">
+                <!-- As tarefas serão injetadas via JS -->
+            </div>
+            
+            <div class="glass-panel p-6 rounded-xl mt-8 flex flex-col md:flex-row items-center gap-6 border-l-4 border-l-yellow-500">
+                <i class="fa-solid fa-skull text-5xl text-gray-400"></i>
+                <div>
+                    <h3 class="font-tactical text-xl text-yellow-500 mb-2">A Dor é Temporária. A Farda é para Sempre.</h3>
+                    <p class="text-gray-300 text-sm">Pedro, cada questão resolvida, cada PDF lido e cada anotação feita te coloca na frente de mil concorrentes. O dia da prova está chegando. Execute o plano com perfeição.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: IA, Estatísticas, Simulador, Links e Anotações -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- NOVO: CONTEÚDO PROGRAMÁTICO (EDITAL) -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg">
+                <h3 class="font-tactical text-yellow-500 text-lg mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-list-check mr-2"></i> Edital Alvo (Conteúdo Programático)</h3>
+                <div class="space-y-4 text-sm text-gray-300 h-64 overflow-y-auto pr-2 custom-scrollbar">
+                    <div>
+                        <strong class="text-white block mb-1">1. Língua Portuguesa</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Análise, compreensão e interpretação de textos.</li>
+                            <li>Coesão e coerência textual.</li>
+                            <li>Ortografia oficial e acentuação gráfica.</li>
+                            <li>Morfologia (classes de palavras: substantivo, adjetivo, artigos, etc.).</li>
+                            <li>Concordância nominal e verbal.</li>
+                            <li>Emprego da crase e regras de pontuação.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">2. Noções de Informática</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Conceitos básicos de hardware, software e uso de periféricos.</li>
+                            <li>Sistema operacional Windows (incluindo 11) e gerenc. de arquivos.</li>
+                            <li>Aplicativos de edição (Word, Excel) e LibreOffice.</li>
+                            <li>Internet, navegadores, correio eletrônico e nuvem.</li>
+                            <li>Segurança da informação (vírus, backup). Teclas de atalho.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">3. Admin. Pública e Atualidades</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Estrutura da Administração Pública e políticas públicas no Brasil.</li>
+                            <li>Tópicos relevantes e acontecimentos da atualidade nacional e internacional.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">4. Conhecimentos Específicos</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Direito Penal: Crimes contra a pessoa, patrimônio e administração pública.</li>
+                            <li>Estatuto Geral das Guardas Municipais (Lei 13.022/2014).</li>
+                            <li>Direito Constitucional (Art. 144 - Segurança Pública).</li>
+                            <li>Declaração Universal dos Direitos Humanos.</li>
+                            <li>Noções básicas do Código de Trânsito Brasileiro (CTB).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-xl overflow-hidden border-2 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.3)] relative group">
+                <div class="bg-red-600 p-3 flex justify-between items-center">
+                    <h3 class="font-tactical text-white text-lg"><i class="fa-solid fa-crosshairs mr-2"></i> SIMULADOR IGEDUC</h3>
+                    <span class="bg-white text-red-600 text-xs px-2 py-1 rounded font-bold">50 QUESTÕES</span>
+                </div>
+                <div class="p-5 text-center">
+                    <p class="text-sm text-gray-300 mb-4">Motor de geração com bateria de 50 questões focadas. Escolha seu alvo e teste seus conhecimentos ao limite.</p>
+                    
+                    <select id="quizFilter" class="w-full bg-slate-800 text-white border border-slate-700 rounded py-2 px-3 mb-4 font-bold outline-none focus:border-red-500 transition-colors">
+                        <option value="todos">Simulado Geral (Todas as Áreas)</option>
+                        <option value="Língua Portuguesa">Língua Portuguesa</option>
+                        <option value="Informática Básica">Informática Básica</option>
+                        <option value="Administração e Atualidades">Admin, Políticas e Atualidades</option>
+                        <option value="Direito Penal">Direito Penal</option>
+                        <option value="Legislação e Específicos">Legislação Específica (GCM, CTB, DUDH)</option>
+                    </select>
+
+                    <button onclick="openQuiz()" class="w-full bg-slate-900 hover:bg-red-600 text-white border border-red-600 py-3 rounded font-tactical transition-colors text-lg shadow-lg">
+                        <i class="fa-solid fa-play mr-2"></i> INICIAR BATERIA (50Q)
+                    </button>
+                </div>
+            </div>
+
+            <!-- NOVO: Anotações Táticas -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg">
+                <h3 class="font-tactical text-yellow-500 text-lg mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-pen-to-square mr-2"></i> Anotações Táticas</h3>
+                <p class="text-xs text-gray-400 mb-2">Suas anotações são salvas automaticamente.</p>
+                <textarea id="tacticalNotes" class="w-full h-40 bg-slate-900 border border-slate-600 rounded p-3 text-sm text-gray-200 outline-none focus:border-yellow-500 resize-none" placeholder="Escreva aqui mnemônicos, atalhos, regras de crase e detalhes que você costuma esquecer..."></textarea>
+            </div>
+
+            <!-- Progressão -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg">
+                <h3 class="font-tactical text-yellow-500 text-lg mb-4 border-b border-slate-700 pb-2"><i class="fa-solid fa-chart-radar mr-2"></i> Situação Tática</h3>
+                <div class="relative w-full aspect-square">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-400">
+                    <div class="bg-slate-800 p-2 rounded text-center border border-slate-700"><span class="block text-white font-bold text-lg" id="statTotal">0/0</span> Missões Concluídas</div>
+                    <div class="bg-slate-800 p-2 rounded text-center border border-slate-700"><span class="block text-green-400 font-bold text-lg" id="statPercent">0%</span> Prontidão</div>
+                </div>
+            </div>
+
+            <!-- NOVO: Links Úteis -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg">
+                <h3 class="font-tactical text-yellow-500 text-lg mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-link mr-2"></i> Arsenal de Links Úteis</h3>
+                <div class="space-y-2 text-sm">
+                    <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-scale-balanced mr-2 text-blue-400"></i> Constituição Federal (Planalto)</a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-gavel mr-2 text-red-400"></i> Código Penal (Planalto)</a>
+                    <a href="https://www.qconcursos.com/" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-q mr-2 text-blue-600"></i> QConcursos (Treino Extra)</a>
+                    <a href="https://www.pciconcursos.com.br/provas/igeduc/" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-file-pdf mr-2 text-green-400"></i> Provas Anteriores IGEDUC</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="customModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100] backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-yellow-500 rounded-xl p-6 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-200">
+            <i class="fa-solid fa-circle-exclamation text-4xl text-yellow-500 mb-4" id="modalIcon"></i>
+            <h3 class="text-xl font-tactical text-white mb-2" id="modalTitle">Atenção</h3>
+            <p class="text-gray-300 mb-6" id="modalMessage">Mensagem</p>
+            <button onclick="closeModal()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold py-2 px-8 rounded">ENTENDIDO</button>
+        </div>
+    </div>
+
+    <!-- MODAL DO SIMULADOR (ATUALIZADO COM FEEDBACK JUSTIFICADO) -->
+    <div id="quizModal" class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[110] backdrop-blur-md overflow-y-auto py-10 px-4">
+        <div class="bg-slate-900 border-2 border-slate-700 rounded-xl max-w-4xl w-full shadow-2xl relative">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800 rounded-t-xl sticky top-0 z-20">
+                <h3 class="text-2xl font-tactical text-red-500" id="quizModalTitle"><i class="fa-solid fa-crosshairs mr-2"></i> TREINAMENTO IGEDUC</h3>
+                <button onclick="closeQuiz()" class="text-gray-400 hover:text-white transition-colors bg-slate-700 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 md:p-10" id="quizContent">
+                <div class="flex justify-between text-sm text-gray-400 mb-6 font-bold tracking-wider border-b border-slate-700 pb-2">
+                    <span id="quizProgress" class="bg-slate-800 px-3 py-1 rounded">Questão 1</span>
+                    <span id="quizSubject" class="text-yellow-500">Disciplina</span>
+                </div>
+                
+                <p id="quizQuestionText" class="text-xl text-white mb-8 leading-relaxed font-semibold"></p>
+                
+                <div id="quizOptions" class="space-y-4">
+                    <!-- Opções injetadas via JS -->
+                </div>
+                
+                <!-- CAIXA DE FEEDBACK DETALHADO -->
+                <div id="detailedFeedbackBox" class="mt-8 p-6 rounded-lg hidden border-l-4">
+                    <h4 id="feedbackTitle" class="font-bold text-lg mb-2 flex items-center"></h4>
+                    <p id="feedbackExplanation" class="text-gray-200 leading-relaxed"></p>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-slate-700 bg-slate-800 rounded-b-xl flex justify-end items-center hidden sticky bottom-0 z-20" id="quizResultFooter">
+                <button id="btnNextQuiz" onclick="nextQuizQuestion()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold py-3 px-8 rounded font-tactical text-lg transition-transform hover:scale-105 shadow-lg hidden">AVANÇAR PARA PRÓXIMA MISSÃO <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                <button id="btnFinishQuiz" onclick="finishQuizReport()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded font-tactical text-lg transition-transform hover:scale-105 shadow-lg hidden">FINALIZAR E VER RELATÓRIO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISUALIZADOR DE PDFs INTERNOS (PREMIUM) -->
+    <div id="materialModal" class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[120] backdrop-blur-md overflow-y-auto py-10 px-4">
+        <div class="bg-white border-2 border-slate-400 rounded-xl max-w-5xl w-full shadow-2xl relative text-slate-900">
+            <div class="p-4 border-b border-slate-300 flex justify-between items-center bg-gray-100 rounded-t-xl sticky top-0 z-30 shadow-sm">
+                <h3 class="text-xl font-tactical text-slate-800" id="materialTitle"><i class="fa-solid fa-book-open text-red-600 mr-2"></i> DOUTRINA E LEI SECA</h3>
+                <div class="flex gap-4 items-center">
+                    <button onclick="window.print()" class="text-blue-600 hover:text-blue-800 font-bold text-sm bg-blue-100 px-3 py-1 rounded"><i class="fa-solid fa-print mr-1"></i> IMPRIMIR</button>
+                    <button onclick="closeMaterial()" class="text-gray-500 hover:text-red-600 transition-colors bg-gray-200 hover:bg-red-100 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            
+            <div class="p-8 md:p-16 pdf-content" id="materialContent" style="font-family: 'Times New Roman', Times, serif; font-size: 1.15rem; line-height: 1.8;">
+                <!-- O conteúdo do PDF interno será injetado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE RELATÓRIO FINAL (GABARITO E JUSTIFICATIVAS) -->
+    <div id="reportModal" class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[130] backdrop-blur-md overflow-y-auto py-10 px-4">
+        <div class="bg-slate-900 border-2 border-slate-700 rounded-xl max-w-4xl w-full shadow-2xl relative">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800 rounded-t-xl sticky top-0 z-20 shadow-lg">
+                <h3 class="text-2xl font-tactical text-yellow-500"><i class="fa-solid fa-flag-checkered mr-2"></i> RELATÓRIO TÁTICO FINAL (GABARITO)</h3>
+                <button onclick="closeReport()" class="text-gray-400 hover:text-white transition-colors bg-slate-700 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 md:p-10" id="reportContent">
+                <!-- O relatório detalhado com erros e acertos será injetado via JS -->
+            </div>
+
+            <div class="p-6 border-t border-slate-700 bg-slate-800 rounded-b-xl flex justify-end items-center sticky bottom-0 z-20">
+                <button onclick="closeReport()" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold py-3 px-8 rounded font-tactical text-lg transition-transform hover:scale-105 shadow-lg">FECHAR RELATÓRIO E VOLTAR AO QUARTEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        let userProgress = {};
+        try {
+            const savedProgress = localStorage.getItem('gcm_trindade_progress_v3');
+            if (savedProgress) {
+                userProgress = JSON.parse(savedProgress);
+            }
+        } catch (e) {
+            console.error("Erro ao carregar o progresso do soldado:", e);
+            userProgress = {};
+        }
+
+        const materialsDatabase = {
+            "mat_pt_texto": { 
+                title: "Língua Portuguesa: Compreensão e Coesão", 
+                content: `
+                    <h1>Interpretação e Mecanismos de Coesão</h1>
+                    <h2>1. Compreensão vs Interpretação</h2>
+                    <p>A banca IGEDUC tem forte inclinação para a <strong>compreensão literal</strong>. Cuidado com os comandos:</p>
+                    <ul>
+                        <li><strong>Compreensão:</strong> "Segundo o texto...". A resposta <strong>está escrita</strong>.</li>
+                        <li><strong>Interpretação:</strong> "Infere-se do texto...". Exige raciocínio, mas <strong>nunca extrapolando</strong> a ideia original.</li>
+                    </ul>
+                    <h2>2. Coesão Referencial (Anáfora e Catáfora)</h2>
+                    <p>Dominar os pronomes é essencial para não perder pontos de graça:</p>
+                    <ul>
+                        <li><strong>Anáfora:</strong> Retoma algo <strong>já dito</strong>. Ex: "A viatura chegou. <em>Ela</em> estava equipada." (Usa-se: esse, essa, isso).</li>
+                        <li><strong>Catáfora:</strong> Antecipa algo que <strong>ainda será dito</strong>. Ex: "A ordem é <em>esta</em>: todos no pátio." (Usa-se: este, esta, isto).</li>
+                    </ul>` 
+            },
+            "mat_pt_orto": {
+                title: "Língua Portuguesa: Ortografia e Acentuação",
+                content: `
+                    <h1>Ortografia Oficial e Novo Acordo</h1>
+                    <h2>1. Acentuação Gráfica (O que mais cai)</h2>
+                    <p>Atenção às regras que mudaram com o Novo Acordo Ortográfico. A IGEDUC foca nas exceções:</p>
+                    <ul>
+                        <li><strong>Ditongos abertos (EI, OI):</strong> Perderam o acento nas <strong>Paroxítonas</strong> (Ex: Jiboia, Ideia, Assembleia). <em>Atenção: Oxítonas mantêm o acento! (Ex: Herói, Papéis).</em></li>
+                        <li><strong>Hiatos "EE" e "OO":</strong> Perderam o acento! (Ex: Voo, Enjoo, Leem, Veem).</li>
+                        <li><strong>Acento Diferencial:</strong> Mantém-se em Pôde (passado) vs Pode (presente), e Pôr (verbo) vs Por (preposição).</li>
+                    </ul>
+                    <h2>2. Uso dos Porquês (Pegadinha Certa)</h2>
+                    <ul>
+                        <li><strong>Por que:</strong> Início de pergunta ou equivalendo a "pelo qual".</li>
+                        <li><strong>Por quê:</strong> Final de frase (perto do ponto).</li>
+                        <li><strong>Porque:</strong> Resposta, explicação (pois).</li>
+                        <li><strong>Porquê:</strong> Substantivo, vem com artigo (O porquê).</li>
+                    </ul>`
+            },
+            "mat_pt_crase": {
+                title: "Língua Portuguesa: Emprego da Crase",
+                content: `
+                    <h1>Domínio da Crase (A + A)</h1>
+                    <h2>1. Casos Proibidos (Regra de Ouro)</h2>
+                    <p>Você <strong>NUNCA</strong> usará crase diante de:</p>
+                    <ul>
+                        <li><strong>Verbos:</strong> "Começou a chover", "Disposto a lutar".</li>
+                        <li><strong>Palavras Masculinas:</strong> "Andar a pé", "Venda a prazo".</li>
+                        <li><strong>Pronomes Indefinidos e Pessoais:</strong> "Falei a ela", "Entreguei a todos".</li>
+                        <li><strong>Palavras Repetidas:</strong> "Cara a cara", "Gota a gota".</li>
+                    </ul>
+                    <h2>2. Casos Facultativos (Decore)</h2>
+                    <p>A crase é opcional em apenas 3 casos (macete: Até Minha Maria):</p>
+                    <ul>
+                        <li>Depois da preposição <strong>Até</strong> (Vou até a/à praia).</li>
+                        <li>Antes de pronome possessivo feminino (Minha, sua, nossa).</li>
+                        <li>Antes de nome próprio feminino (Falei a/à Maria).</li>
+                    </ul>`
+            },
+            "mat_pt_concord": {
+                title: "Língua Portuguesa: Concordância",
+                content: `
+                    <h1>Concordância Nominal e Verbal</h1>
+                    <h2>1. Verbos Impessoais (Cuidado Extremo)</h2>
+                    <p>Verbos que NÃO têm sujeito e ficam sempre no singular (3ª pessoa):</p>
+                    <ul>
+                        <li><strong>Haver:</strong> No sentido de existir, ocorrer ou tempo passado. (Ex: <em>Havia</em> muitos guardas. <strong>Nunca</strong> "Havian").</li>
+                        <li><strong>Fazer:</strong> Indicando tempo decorrido ou clima. (Ex: <em>Faz</em> dois anos. <strong>Nunca</strong> "Fazem dois anos").</li>
+                    </ul>
+                    <h2>2. Partícula "SE"</h2>
+                    <ul>
+                        <li><strong>Apassivadora:</strong> O verbo concorda com o sujeito. (Ex: Vende-se carro / Vendem-se carros).</li>
+                        <li><strong>Índice de Indeterminação:</strong> Verbo sempre no singular, acompanhado de preposição. (Ex: Precisa-se de guardas).</li>
+                    </ul>`
+            },
+            "mat_info_win": { 
+                title: "Informática: Hardware e Windows", 
+                content: `
+                    <h1>Hardware e Sistema Operacional Windows</h1>
+                    <h2>1. Hardware (Físico)</h2>
+                    <ul>
+                        <li><strong>Memória RAM:</strong> Principal, de trabalho e <strong>VOLÁTIL</strong> (perde dados ao desligar).</li>
+                        <li><strong>HD/SSD:</strong> Memória secundária, de massa e <strong>NÃO VOLÁTIL</strong>. (O SSD é muito mais rápido pois não possui partes móveis).</li>
+                    </ul>
+                    <h2>2. Atalhos do Windows (Banca IGEDUC)</h2>
+                    <p>O examinador cobra atalhos de produtividade policial:</p>
+                    <ul>
+                        <li><strong>Win + L:</strong> Lock (Bloqueia a sessão imediatamente).</li>
+                        <li><strong>Win + D:</strong> Desktop (Minimiza tudo e mostra a Área de Trabalho).</li>
+                        <li><strong>Win + E:</strong> Abre o Explorador de Arquivos (Explorer).</li>
+                        <li><strong>Ctrl + Shift + Esc:</strong> Abre o Gerenciador de Tarefas DIRETAMENTE (ótimo para matar processos travados).</li>
+                    </ul>` 
+            },
+            "mat_info_office": {
+                title: "Informática: Word e Excel",
+                content: `
+                    <h1>Pacote Office (Word e Excel)</h1>
+                    <h2>1. Microsoft Word</h2>
+                    <ul>
+                        <li><strong>Ctrl + Z:</strong> Desfazer / <strong>Ctrl + Y:</strong> Refazer.</li>
+                        <li><strong>Ctrl + L:</strong> Localizar / <strong>Ctrl + U:</strong> Substituir.</li>
+                        <li><strong>Pincel de Formatação:</strong> Copia apenas o estilo (fonte, cor, tamanho) de um texto para outro, não o conteúdo.</li>
+                    </ul>
+                    <h2>2. Microsoft Excel (Fórmulas)</h2>
+                    <p>A IGEDUC ama a diferença entre (:) e (;):</p>
+                    <ul>
+                        <li><strong>SOMA(A1:A5):</strong> Os dois pontos significam <strong>ATÉ</strong>. Soma um intervalo contínuo (A1, A2, A3, A4 e A5).</li>
+                        <li><strong>SOMA(A1;A5):</strong> O ponto e vírgula significa <strong>E</strong>. Soma apenas células isoladas (A1 e A5).</li>
+                    </ul>`
+            },
+            "mat_info_seg": {
+                title: "Informática: Segurança e Backup",
+                content: `
+                    <h1>Segurança da Informação</h1>
+                    <h2>1. Tipos de Malwares</h2>
+                    <ul>
+                        <li><strong>Ransomware:</strong> Malware que <strong>criptografa</strong> (sequestra) os dados e exige resgate (ransom), geralmente em Bitcoin.</li>
+                        <li><strong>Phishing:</strong> Golpe de "pescaria" (engenharia social). Cria e-mails falsos de bancos para roubar senhas. Não é um vírus clássico, é um engano.</li>
+                        <li><strong>Trojan:</strong> Cavalo de Troia. Um programa aparentemente legítimo que esconde funções maliciosas.</li>
+                    </ul>
+                    <h2>2. Cópias de Segurança (Backup)</h2>
+                    <ul>
+                        <li><strong>Completo:</strong> Copia tudo. Demora mais, fácil de restaurar.</li>
+                        <li><strong>Incremental:</strong> Copia APENAS o que mudou desde o último backup. Mais rápido para fazer, pior para restaurar.</li>
+                    </ul>`
+            },
+            "mat_admin_limpe": {
+                title: "Administração: Princípios (Art. 37)",
+                content: `
+                    <h1>Princípios da Administração Pública</h1>
+                    <p>Constituição Federal, Art. 37: A administração pública obedecerá aos princípios de <strong>L.I.M.P.E.</strong>:</p>
+                    <ul>
+                        <li><strong>Legalidade:</strong> O agente público só pode fazer o que a lei autoriza ou determina. (Diferente do particular, que pode fazer tudo que a lei não proíbe).</li>
+                        <li><strong>Impessoalidade:</strong> Proíbe o <strong>Nepotismo</strong> e a promoção pessoal usando a máquina pública. O fim é sempre o interesse público.</li>
+                        <li><strong>Moralidade:</strong> Ética, boa-fé e honestidade. Nem tudo que é legal é moral.</li>
+                        <li><strong>Publicidade:</strong> Transparência dos atos. Regra geral é o acesso à informação (exceção: segurança do Estado e intimidade).</li>
+                        <li><strong>Eficiência:</strong> Fazer mais com menos. Rendimento, presteza, sem desperdício de dinheiro público (incluído pela EC 19/98).</li>
+                    </ul>`
+            },
+            "mat_penal_pessoa": {
+                title: "Direito Penal: Crimes Contra a Pessoa",
+                content: `
+                    <h1>Crimes Contra a Pessoa</h1>
+                    <h2>1. Homicídio (Art. 121)</h2>
+                    <ul>
+                        <li><strong>Homicídio Funcional (Qualificador - Hediondo):</strong> Matar autoridade ou agente de segurança pública (Art. 144, inclui GCM) no exercício da função ou em decorrência dela, ou contra seu cônjuge/parente até 3º grau.</li>
+                        <li><strong>Feminicídio:</strong> Contra a mulher por razões da condição de sexo feminino (violência doméstica e familiar).</li>
+                    </ul>
+                    <h2>2. Lesão Corporal (Art. 129)</h2>
+                    <p>É o dano à integridade física ou saúde. Se a lesão resultar em perigo de vida, debilidade permanente ou incapacidade para ocupações habituais por mais de 30 dias, é classificada como <strong>GRAVE</strong>.</p>`
+            },
+            "mat_penal_patrimonio": {
+                title: "Direito Penal: Patrimônio",
+                content: `
+                    <h1>Crimes Contra o Patrimônio</h1>
+                    <h2>1. Furto (Art. 155) vs Roubo (Art. 157)</h2>
+                    <p>A diferença essencial para a prova:</p>
+                    <ul>
+                        <li><strong>Furto:</strong> Subtrair coisa alheia móvel, <strong>SEM violência ou grave ameaça</strong> contra a pessoa. Ex: Bater carteira, furtar veículo estacionado.</li>
+                        <li><strong>Roubo:</strong> Subtrair coisa alheia <strong>COM violência ou grave ameaça</strong>. A pena é muito mais alta.</li>
+                    </ul>
+                    <h2>2. Súmula 582 STJ (Consumação)</h2>
+                    <p><strong>Cai em toda prova policial:</strong> Consuma-se o crime de roubo/furto com a inversão da posse do bem, ainda que por breve tempo e em seguida à perseguição, sendo <strong>desnecessária (prescindível)</strong> a posse mansa e pacífica.</p>`
+            },
+            "mat_penal_admin": {
+                title: "Direito Penal: Administração Pública",
+                content: `
+                    <h1>Crimes Praticados por Funcionário Público</h1>
+                    <p>Foco nos verbos (núcleo do tipo):</p>
+                    <ul>
+                        <li><strong>Peculato (Art. 312):</strong> Apropriar-se de dinheiro ou desviar (Peculato-Apropriação) / Subtrair valendo-se da facilidade do cargo (Peculato-Furto).</li>
+                        <li><strong>Concussão (Art. 316):</strong> <strong>EXIGIR</strong> vantagem indevida, em razão da função. (Cuidado: não é ameaça de morte, é "carteirada").</li>
+                        <li><strong>Corrupção Passiva (Art. 317):</strong> <strong>SOLICITAR</strong> ou <strong>RECEBER</strong> vantagem indevida, ou aceitar promessa.</li>
+                        <li><strong>Prevaricação (Art. 319):</strong> Retardar ou deixar de praticar ato de ofício para satisfazer <strong>interesse ou sentimento pessoal</strong> (ex: dó, raiva, preguiça).</li>
+                    </ul>`
+            },
+            "mat_cf_144": {
+                title: "Legislação: Art. 144 CF/88",
+                content: `
+                    <h1>Constituição Federal: Artigo 144</h1>
+                    <p>A segurança pública é dever do Estado, direito e responsabilidade de todos.</p>
+                    <h2>1. O Parágrafo 8º (Guarda Municipal)</h2>
+                    <blockquote>"§ 8º Os Municípios <strong>poderão</strong> constituir guardas municipais destinadas à proteção de seus bens, serviços e instalações, conforme dispuser a lei."</blockquote>
+                    <h2>2. Decisões do STF (Jurisprudência Absoluta)</h2>
+                    <ul>
+                        <li><strong>ADPF 995:</strong> O STF reconheceu que as Guardas Municipais <strong>INTEGRAM SIM o Sistema de Segurança Pública (SUSP)</strong>. Qualquer alternativa dizendo que GCM não faz segurança pública está errada.</li>
+                        <li>A criação de GCM é <strong>facultativa</strong> (poderão), não obrigatória.</li>
+                    </ul>`
+            },
+            "mat_gcm_13022": {
+                title: "Legislação: Estatuto das GCMs",
+                content: `
+                    <h1>Lei 13.022/2014 - Estatuto Geral</h1>
+                    <h2>1. Princípios Mínimos (Art. 3º) - DECORE!</h2>
+                    <ol>
+                        <li>Proteção dos direitos humanos fundamentais, exercício da cidadania e liberdades públicas;</li>
+                        <li>Preservação da vida, redução do sofrimento e diminuição das perdas;</li>
+                        <li><strong>Patrulhamento preventivo</strong> (GCM faz preventivo, PM faz ostensivo);</li>
+                        <li>Compromisso com a evolução social da comunidade;</li>
+                        <li>Uso progressivo da força.</li>
+                    </ol>
+                    <h2>2. Requisitos Básicos (Art. 10)</h2>
+                    <p>Nacionalidade brasileira, gozo de direitos políticos, quitação militar/eleitoral, nível médio, 18 anos, aptidão física/mental/psicológica, e idoneidade moral.</p>`
+            },
+            "mat_leg_maria_tortura": {
+                title: "Legislação: Tortura e Maria da Penha",
+                content: `
+                    <h1>Leis Extravagantes</h1>
+                    <h2>1. Lei de Tortura (Lei 9.455/97)</h2>
+                    <ul>
+                        <li><strong>Efeitos da Condenação:</strong> É <strong>automático</strong> (não precisa o juiz fundamentar). Acarreta a perda do cargo/função e interdição para seu exercício pelo <strong>DOBRO</strong> do prazo da pena aplicada.</li>
+                        <li>É crime Hediondo (inafiançável, insuscetível de graça e anistia).</li>
+                        <li><strong>Omissão:</strong> Quem se omite diante da tortura quando tinha dever de evitar (ex: colega policial) responde com pena menor (único caso não hediondo).</li>
+                    </ul>
+                    <h2>2. Maria da Penha (Lei 11.340/06)</h2>
+                    <p>5 formas de violência contra a mulher: Física, <strong>Psicológica</strong>, Sexual, Patrimonial e Moral. <em>(A banca tenta dizer que violência psicológica não é tipificada na lei. Mentira!)</em>.</p>`
+            },
+            "mat_ctb": {
+                title: "Legislação: Código de Trânsito",
+                content: `
+                    <h1>CTB (Noções Básicas para GCM)</h1>
+                    <h2>1. Municipalização do Trânsito</h2>
+                    <p>Os municípios (através de agentes de trânsito ou GCM mediante convênio) são responsáveis por autuar infrações de circulação, parada e estacionamento, e excesso de peso/dimensões.</p>
+                    <h2>2. Embriaguez ao Volante</h2>
+                    <ul>
+                        <li><strong>Infração Administrativa (Art. 165):</strong> Gravíssima, multa (10x), suspensão da CNH por 12 meses. Retenção do veículo.</li>
+                        <li><strong>Crime de Trânsito (Art. 306):</strong> Conduzir com capacidade psicomotora alterada. Pena de detenção de 6 meses a 3 anos.</li>
+                    </ul>`
+            }
+        };
+
+        const editalModules = [
+            { sub: "Língua Portuguesa", topic: "Interpretação de Textos e Coesão", mat: "mat_pt_texto", vid: "aula completa interpretação de textos igeduc", dailyQ: [{ text: "O termo 'Ele', retomando algo já dito, exerce coesão:", options: ["Catafórica", "Anafórica", "Elíptica", "Exofórica"], correct: 1, exp: "Anafórica. Retoma termo anterior."}] },
+            { sub: "Informática Básica", topic: "Hardware, Software e Windows", mat: "mat_info_win", vid: "informática para concursos windows 10 atalhos", dailyQ: [{ text: "O atalho Win+L serve para:", options: ["Desktop", "Gerenciador", "Bloquear Sessão", "Desligar"], correct: 2, exp: "Win + L (Lock) bloqueia a sessão imediatamente."}] },
+            { sub: "Direito Penal", topic: "Crimes Contra a Pessoa", mat: "mat_penal_pessoa", vid: "direito penal crimes contra a pessoa homicídio concurso", dailyQ: [{ text: "Matar Guarda Municipal no exercício da função é homicídio:", options: ["Simples", "Qualificado Funcional", "Privilegiado", "Culposo"], correct: 1, exp: "Homicídio funcional contra agentes do art. 144 qualifica o crime."}] },
+            { sub: "Legislação (GCM)", topic: "Estatuto Geral (Lei 13.022)", mat: "mat_gcm_13022", vid: "estatuto das guardas municipais lei 13022 esquematizada", dailyQ: [{ text: "É princípio da GCM:", options: ["Uso letal primário", "Patrulhamento ostensivo", "Patrulhamento preventivo", "Inquérito policial"], correct: 2, exp: "A GCM realiza patrulhamento PREVENTIVO."}] },
+            
+            { sub: "Língua Portuguesa", topic: "Ortografia e Acentuação", mat: "mat_pt_orto", vid: "ortografia oficial e novo acordo ortográfico exercícios", dailyQ: [{ text: "Qual palavra perdeu o acento?", options: ["Herói", "Jiboia", "Saúde", "Baú"], correct: 1, exp: "Ditongos abertos (oi, ei) em paroxítonas perderam o acento (Jiboia)."}] },
+            { sub: "Informática Básica", topic: "Word e Excel", mat: "mat_info_office", vid: "excel fórmulas e funções concurso público", dailyQ: [{ text: "SOMA(A1;A5) faz o quê?", options: ["Soma de A1 até A5", "Soma apenas A1 e A5", "Divide", "Subtrai"], correct: 1, exp: "Ponto e vírgula significa 'E' (células isoladas)."}] },
+            { sub: "Admin. Pública", topic: "Princípios da Administração", mat: "mat_admin_limpe", vid: "princípios da administração pública limpe macetes", dailyQ: [{ text: "Qual princípio proíbe o nepotismo?", options: ["Legalidade", "Impessoalidade", "Moralidade", "Eficiência"], correct: 1, exp: "A impessoalidade veda favorecimentos e parentescos."}] },
+            { sub: "Direito Penal", topic: "Crimes Contra o Patrimônio", mat: "mat_penal_patrimonio", vid: "crimes contra o patrimônio furto roubo extorsão", dailyQ: [{ text: "Subtração COM violência ou grave ameaça é:", options: ["Furto", "Estelionato", "Roubo", "Dano"], correct: 2, exp: "A presença de violência caracteriza o Roubo (Art. 157)."}] },
+
+            { sub: "Língua Portuguesa", topic: "Emprego da Crase", mat: "mat_pt_crase", vid: "uso da crase macetes definitivos", dailyQ: [{ text: "A crase é proibida antes de:", options: ["Verbos e palavras masculinas", "Horas", "Nomes femininos", "Cidades"], correct: 0, exp: "Regra básica: não tem crase antes de verbo ou palavra masculina."}] },
+            { sub: "Informática Básica", topic: "Segurança e Backup", mat: "mat_info_seg", vid: "segurança da informação malwares ransomware", dailyQ: [{ text: "Malware que sequestra dados cobrando resgate:", options: ["Trojan", "Ransomware", "Worm", "Phishing"], correct: 1, exp: "Ransomware cobra resgate para liberar dados criptografados."}] },
+            { sub: "Legislação (CF)", topic: "Art. 144 CF/88", mat: "mat_cf_144", vid: "artigo 144 segurança pública esquematizado", dailyQ: [{ text: "O STF (ADPF 995) decidiu que a GCM:", options: ["Não faz segurança", "Integra o SUSP", "Faz segurança estadual", "Só cuida do trânsito"], correct: 1, exp: "GCM integra o Sistema Único de Segurança Pública."}] },
+            { sub: "Direito Penal", topic: "Crimes Contra a Adm. Pública", mat: "mat_penal_admin", vid: "crimes contra a administração pública praticados por funcionário", dailyQ: [{ text: "EXIGIR vantagem indevida em razão do cargo é:", options: ["Corrupção", "Prevaricação", "Concussão", "Peculato"], correct: 2, exp: "Verbo EXIGIR é Concussão (Art. 316)."}] },
+
+            { sub: "Língua Portuguesa", topic: "Concordância", mat: "mat_pt_concord", vid: "concordância verbal e nominal exercícios", dailyQ: [{ text: "Indique o correto sobre tempo decorrido:", options: ["Fazem dois anos", "Faz dois anos", "Faziam dois anos", "Houveram anos"], correct: 1, exp: "Verbo fazer indicando tempo é impessoal (sempre singular)."}] },
+            { sub: "Legislação Especial", topic: "Maria da Penha e Tortura", mat: "mat_leg_maria_tortura", vid: "lei de tortura 9455 atualizada concurso", dailyQ: [{ text: "Efeito da condenação por Tortura para servidor:", options: ["Automático, perda e interdição pelo dobro", "Não automático", "Perda sem interdição", "Apenas multa"], correct: 0, exp: "Efeito automático, perde o cargo e fica interditado pelo dobro do tempo."}] },
+            { sub: "Legislação (Trânsito)", topic: "CTB Básico", mat: "mat_ctb", vid: "ctb infrações e penalidades para guardas municipais", dailyQ: [{ text: "Dirigir sob efeito de álcool é:", options: ["Só infração", "Infração e, dependendo, crime", "Permitido", "Só crime"], correct: 1, exp: "É infração gravíssima e crime se a capacidade psicomotora for alterada."}] }
+        ];
+
+        let dynamicSchedule = {};
+        let dailyModulesMap = {};
+        const startDate = new Date(2026, 9, 16); // 16 de Outubro de 2026
+        const endDate = new Date(2026, 11, 4); // 04 de Dezembro de 2026
+        const daySelector = document.getElementById('daySelector');
+        
+        let currentDate = new Date(startDate);
+        let modIndex = 0;
+
+        // Gera os dias
+        while (currentDate <= endDate) {
+            const dateStr = currentDate.toLocaleDateString('pt-BR');
+            const weekDay = currentDate.getDay(); // 0 = Domingo
+            let tasks = [];
+            
+            if (weekDay === 0) {
+                // DOMINGO: SIMULADO GERAL
+                tasks = [
+                    { id: `t1_${dateStr}`, time: "08:00 - 12:00", subject: "Simulado Geral IGEDUC", topic: "Bateria Tática de 50 questões mesclando todo o edital.", type: "Missão Crítica", icon: "fa-crosshairs", action: "javascript:openQuiz('todos')" },
+                    { id: `t2_${dateStr}`, time: "14:00 - 18:00", subject: "Revisão Ativa e Caderno de Erros", topic: "Ler as justificativas das questões erradas e anotar na lateral.", type: "Revisão", icon: "fa-book-skull", action: "javascript:document.getElementById('tacticalNotes').focus()" },
+                    { id: `t3_${dateStr}`, time: "19:00 - 22:00", subject: "Lazer Estratégico e TAF", topic: "Preparação física e descanso mental. Hidrate-se.", type: "Físico", icon: "fa-person-running", action: "javascript:void(0)" }
+                ];
+            } else {
+                // DIAS ÚTEIS: PROGRESSÃO DO EDITAL (Três turnos de alta performance)
+                let item1 = editalModules[modIndex % editalModules.length];
+                let item2 = editalModules[(modIndex + 1) % editalModules.length];
+                
+                dailyModulesMap[dateStr] = [item1, item2];
+
+                // Lógica Dinâmica para nomear a aba da tarde corretamente
+                let matTypeLabel = (item2.sub.includes("Direito") || item2.sub.includes("Legisla") || item2.sub.includes("Penal") || item2.sub.includes("Admin")) 
+                                   ? "Lei Seca (PDF)" 
+                                   : "Apostila (PDF)";
+
+                tasks = [
+                    { id: `t1_${dateStr}`, time: "08:00 - 12:00", subject: item1.sub, topic: `${item1.topic} - Absorção Teórica via Aula.`, type: "Teoria (Vídeo)", icon: "fa-youtube", action: `https://www.youtube.com/results?search_query=${encodeURIComponent(item1.vid)}` },
+                    { id: `t2_${dateStr}`, time: "14:00 - 18:00", subject: item2.sub, topic: `${item2.topic} - Aprofundamento e Leitura do PDF.`, type: matTypeLabel, icon: "fa-file-pdf", action: `javascript:openMaterialModal('${item2.mat}')` },
+                    { id: `t3_${dateStr}`, time: "19:00 - 22:00", subject: `Fixação Tática do Dia`, topic: `Bateria de questões focadas EXCLUSIVAMENTE nos temas vistos hoje (${item1.sub} e ${item2.sub}).`, type: "Prática", icon: "fa-laptop-code", action: `javascript:openDailyQuiz('${dateStr}')` }
+                ];
+                modIndex += 2;
+            }
+
+            dynamicSchedule[dateStr] = tasks;
+            
+            const option = document.createElement('option');
+            option.value = dateStr;
+            const weekNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            option.text = `${dateStr} - ${weekNames[weekDay]}`;
+            daySelector.appendChild(option);
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        // ---------------------------------------------------------------------
+        // 4. MOTOR TÁTICO DE QUESTÕES INÉDITAS (250+ QUESTÕES SEM REPETIÇÃO)
+        // ---------------------------------------------------------------------
+        const baseQuizTemplates = {
+            "Língua Portuguesa": [],
+            "Informática Básica": [],
+            "Administração e Atualidades": [],
+            "Direito Penal": [],
+            "Legislação e Específicos": []
+        };
+
+        function populateMassiveDatabase() {
+            const add = (cat, text, c, w1, w2, w3, exp) => { 
+                baseQuizTemplates[cat].push({ text, options: [c, w1, w2, w3], correct: 0, exp }); 
+            };
+
+            // MOTOR PROCEDURAL MULTIPLICADOR (GERA MILHARES DE QUESTÕES)
+            const buildProceduralQuestions = (category, data) => {
+                data.forEach(item => {
+                    let count = 1;
+                    // Tipo 1: Afirmativa Direta (Qual está correta?)
+                    add(category, `[Missão Procedural - ${item.topic}] Sobre o tema '${item.topic}', assinale a alternativa inteiramente CORRETA segundo as normas e o edital IGEDUC:`, item.trueFact, item.falseFacts[0], item.falseFacts[1], item.falseFacts[2], `Gabarito justificado: ${item.exp}`);
+                    
+                    // Tipo 2: A Exceção (Qual está incorreta?)
+                    add(category, `[Missão Procedural - ${item.topic}] A banca IGEDUC testa sua atenção. Todas as alternativas abaixo são verdadeiras sobre '${item.topic}', EXCETO:`, item.falseFacts[0], item.trueFact, item.trueFact2, item.trueFact3, `A alternativa incorreta é o gabarito. O correto seria: ${item.exp}`);
+                    
+                    // Tipo 3: Caso Prático Policial/Administrativo
+                    add(category, `[Missão Prática - ${item.topic}] Durante o expediente na GCM de Trindade, Pedro precisa aplicar o conhecimento de '${item.topic}'. Qual a atitude/análise técnica correta?`, item.trueFact2, item.falseFacts[1], item.falseFacts[2], item.falseFacts[0], `Na prática, aplica-se a regra principal: ${item.exp}`);
+
+                    // Tipo 4: Verdadeiro/Falso de Assertivas
+                    add(category, `[Missão de Julgamento - ${item.topic}] Analise a afirmação: "${item.trueFact3}". Sobre essa afirmação, é correto dizer que:`, "Está perfeitamente correta e alinhada à doutrina oficial.", "Está incorreta, pois inverte o conceito principal.", "É parcialmente correta, mas falha nas exceções.", "Não se aplica ao contexto do edital.", `Afirmativa verdadeira! Justificativa: ${item.exp}`);
+                });
+            };
+
+            // GERADOR DE VARIAÇÕES PARA DADOS FIXOS
+            const generateVariations = (category, facts) => {
+                facts.forEach(item => {
+                    add(category, `Sobre o tema '${item.tema}', assinale a alternativa inteiramente CORRETA:`, item.c, item.w[0], item.w[1], item.w[2], item.exp);
+                    add(category, `A respeito de '${item.tema}', analise a afirmação: "${item.c}". Assinale a avaliação correta:`, "A afirmação está estritamente correta.", `A afirmação está incorreta. O certo seria: ${item.w[0]}`, `A afirmação está parcialmente correta.`, "A afirmação está totalmente errada.", `A afirmação original é verdadeira. Justificativa: ${item.exp}`);
+                });
+            };
+
+            // BANCO DE DADOS ALIMENTADOR (A IA Multiplica cada item abaixo por 4 formatos lógicos, e embaralha as opções, gerando milhares de interações)
+            
+            const portData = [
+                { topic: "Crase", trueFact: "É proibido o uso de crase antes de verbos e palavras masculinas.", trueFact2: "A crase é facultativa antes de pronomes possessivos femininos (ex: sua, minha).", trueFact3: "Usa-se crase nas locuções adverbiais femininas (ex: à noite, às pressas).", falseFacts: ["A crase é obrigatória antes de qualquer verbo no infinitivo.", "Usa-se crase antes de pronomes de tratamento como Vossa Excelência.", "A crase é proibida antes de horas exatas."], exp: "Não existe crase antes de palavras masculinas, verbos ou maioria dos pronomes (pois não admitem artigo feminino 'a')." },
+                { topic: "Ortografia Oficial e Hífen", trueFact: "Palavras com prefixos terminados em vogal diferente da que inicia a segunda palavra não levam hífen (ex: autoescola).", trueFact2: "Emprega-se o hífen quando a palavra seguinte inicia por 'h' (ex: anti-higiênico).", trueFact3: "Letras iguais se separam com hífen (ex: micro-ondas).", falseFacts: ["Usa-se hífen quando as vogais são diferentes (ex: auto-escola).", "A palavra 'microondas' deve ser escrita toda junta no novo acordo.", "Palavras iniciadas com 'r' ou 's' sempre levam hífen (ex: anti-social)."], exp: "Letras iguais repelem (micro-ondas). Vogais diferentes atraem (autoescola). Se a segunda começar com R ou S, dobra a consoante (antissocial)." },
+                { topic: "Coesão Anafórica e Catafórica", trueFact: "A anáfora retoma um termo já citado no texto (ex: O guarda chegou. Ele estava armado).", trueFact2: "A catáfora antecipa um termo que ainda será mencionado.", trueFact3: "O pronome 'este' geralmente funciona como elemento catafórico (aponta para frente).", falseFacts: ["A anáfora sempre antecipa algo que o autor dirá no próximo parágrafo.", "Coesão e coerência são sinônimos perfeitos na linguística.", "O pronome 'esse' aponta para o que ainda será revelado."], exp: "Anafórico (retoma/para trás = esse, isso). Catafórico (antecipa/para frente = este, isto)." },
+                { topic: "Concordância Verbal", trueFact: "O verbo 'haver' no sentido de existir é impessoal e fica no singular.", trueFact2: "O verbo 'fazer' indicando tempo decorrido fica sempre na 3ª pessoa do singular.", trueFact3: "Com a partícula apassivadora 'se', o verbo concorda com o sujeito (ex: vendem-se casas).", falseFacts: ["Deve-se escrever 'haviam muitas pessoas' na festa.", "O correto é 'fazem dois anos' que estudo.", "O verbo sempre fica no singular independente da partícula 'se'."], exp: "Haver (existir) e Fazer (tempo) são verbos sem sujeito. Não vão para o plural de forma alguma (Havia guardas, Faz dois anos)." },
+                { topic: "Classes de Palavras", trueFact: "Adjetivos flexionam-se em gênero e número para concordar com o substantivo.", trueFact2: "O artigo define ou indefine o substantivo, determinando seu gênero.", trueFact3: "Os advérbios são palavras invariáveis que modificam o verbo, adjetivo ou outro advérbio.", falseFacts: ["O advérbio flexiona-se no plural quando acompanha um adjetivo plural.", "Substantivos não admitem flexão de grau (aumentativo/diminutivo).", "Conjunções exercem função de núcleo do sujeito."], exp: "Advérbio é classe INVARIÁVEL, nunca vai para o plural (ela está 'meio' cansada, e não 'meia' cansada)." }
+            ];
+
+            const infoData = [
+                { topic: "Hardware vs Software", trueFact: "Hardware é a parte física (equipamentos) e software é a parte lógica (programas).", trueFact2: "Placa-mãe, processador e memória RAM são exemplos clássicos de hardware.", trueFact3: "O Sistema Operacional é considerado o software básico principal de um computador.", falseFacts: ["O pacote Microsoft Office é um exemplo clássico de hardware.", "A Memória RAM é um software de processamento rápido.", "O teclado e o mouse são softwares de entrada de dados."], exp: "Macete clássico: Hardware você chuta, Software você xinga." },
+                { topic: "Windows 10/11 - Atalhos", trueFact: "A combinação WIN + L bloqueia a sessão do usuário no Windows.", trueFact2: "CTRL + SHIFT + ESC abre diretamente o Gerenciador de Tarefas.", trueFact3: "WIN + E abre o Explorador de Arquivos do Windows.", falseFacts: ["WIN + L serve para desligar o computador imediatamente.", "CTRL + ALT + DEL abre diretamente a calculadora do sistema.", "WIN + D apaga definitivamente um arquivo da área de trabalho."], exp: "WIN+L (Lock/Bloquear), WIN+E (Explorer), WIN+D (Desktop)." },
+                { topic: "Planilhas Excel", trueFact: "O operador de intervalo (:) indica 'até', selecionando todas as células entre duas referências.", trueFact2: "O sinal de ponto e vírgula (;) serve para separar argumentos ou células isoladas (e).", trueFact3: "Toda fórmula no Excel deve começar obrigatoriamente com o sinal de igual (=).", falseFacts: ["SOMA(A1:A5) soma apenas a primeira e a última célula.", "Para iniciar uma fórmula, usa-se o símbolo de hashtag (#).", "O Excel não permite o uso de funções lógicas matemáticas combinadas."], exp: "SOMA(A1:A5) soma A1, A2, A3, A4 e A5. SOMA(A1;A5) soma APENAS A1 e A5." },
+                { topic: "Correio Eletrônico (Email)", trueFact: "O campo CCO (Cópia Oculta) envia a mensagem sem que os outros destinatários vejam aquele endereço.", trueFact2: "Para anexar um arquivo, geralmente clica-se no ícone de um clipe de papel.", trueFact3: "SPAM refere-se a mensagens não solicitadas, geralmente enviadas em massa.", falseFacts: ["O campo CC (Com Cópia) esconde os endereços de todos os receptores.", "Não é possível enviar mensagens de e-mail sem preencher o campo 'Assunto'.", "E-mails em cópia oculta não recebem anexos por medida de segurança."], exp: "CCO (Com Cópia Oculta) garante a privacidade de quem o recebe, pois ninguém mais da lista vê seu e-mail." },
+                { topic: "Segurança: Malware", trueFact: "Ransomware é o tipo de malware que criptografa dados e exige pagamento (resgate).", trueFact2: "Phishing é uma técnica de engenharia social para 'pescar' senhas enganando o usuário.", trueFact3: "Trojan (Cavalo de Troia) é um programa que parece legítimo, mas esconde ações maliciosas.", falseFacts: ["Ransomware é um software antivírus legítimo do Windows.", "Phishing queima fisicamente a placa-mãe do computador.", "Os vírus de computador não precisam de um programa hospedeiro para funcionar."], exp: "Ransomware (Resgate), Phishing (Pescaria/Engano), Trojan (Presente grego/Parece inofensivo)." }
+            ];
+
+            const pubData = [
+                { topic: "Princípios da Adm. Pública (LIMPE)", trueFact: "São princípios constitucionais expressos: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência.", trueFact2: "A Legalidade exige que o administrador público faça apenas o que a lei autoriza.", trueFact3: "A Impessoalidade veda o uso da máquina pública para promoção pessoal ou nepotismo.", falseFacts: ["A Eficiência estava prevista no texto original da Constituição de 1988.", "A publicidade é absoluta, não admitindo exceção nem para segurança nacional.", "O administrador pode fazer tudo que a lei não proíbe, igual ao cidadão comum."], exp: "LIMPE é o Art. 37 da CF/88. A Eficiência foi adicionada apenas em 1998 (EC 19). Particular faz o que a lei não proíbe; Estado faz SÓ o que a lei autoriza." },
+                { topic: "Nepotismo (Súmula Vinculante 13)", trueFact: "É proibida a nomeação de cônjuge, companheiro ou parente até o 3º grau para cargos de comissão.", trueFact2: "O nepotismo fere frontalmente o princípio da Impessoalidade e da Moralidade.", trueFact3: "A proibição alcança cargos de direção, chefia e assessoramento.", falseFacts: ["É permitido nomear o irmão do Prefeito para um cargo de chefia, desde que por decreto.", "A Súmula Vinculante proíbe parentes até o 5º grau.", "O princípio atingido pelo nepotismo é apenas o da Publicidade."], exp: "Parentes em linha reta, colateral ou afinidade, até o 3º grau (inclusive cunhado e sogra) não podem assumir cargo comissionado (salvo cargos políticos puros, como Secretário de Estado, segundo o STF)." }
+            ];
+
+            const espData = [
+                { topic: "Artigo 144 CF (Segurança Pública)", trueFact: "Os Municípios poderão constituir guardas municipais destinadas à proteção de seus bens, serviços e instalações.", trueFact2: "A segurança pública é dever do Estado, direito e responsabilidade de todos.", trueFact3: "O STF (ADPF 995) reconheceu que as GCMs integram o Sistema Único de Segurança Pública.", falseFacts: ["A criação de Guardas Municipais é obrigatória para todos os municípios brasileiros.", "A CF veda expressamente que as Guardas Municipais andem armadas.", "As Guardas Municipais possuem função primária de policiamento ostensivo e militar."], exp: "O parágrafo 8º diz 'poderão' (facultativo). E a função constitucional é proteger bens, serviços e instalações, mas o STF já cravou que elas compõem a Segurança Pública do país sim!" },
+                { topic: "Crimes contra o Patrimônio", trueFact: "O crime de Roubo exige o emprego de violência ou grave ameaça (Art. 157).", trueFact2: "O Furto (Art. 155) caracteriza-se pela subtração do bem sem o uso de violência contra a vítima.", trueFact3: "Consuma-se o furto/roubo com a inversão da posse, não necessitando ser posse mansa e pacífica.", falseFacts: ["Bater a carteira do bolso de alguém configura o crime de roubo.", "A violência deve necessariamente resultar em lesão corporal grave para ser Roubo.", "Se o ladrão não conseguiu levar a coisa para sua casa, o crime é só tentado."], exp: "Súmula 582 do STJ: O crime está consumado assim que a posse inverte (o ladrão pega o bem), ainda que a GCM o prenda 1 minuto depois na esquina." },
+                { topic: "Crimes Praticados por Func. Público", trueFact: "A Corrupção Passiva envolve os verbos solicitar, receber ou aceitar promessa de vantagem.", trueFact2: "O crime de Concussão exige o verbo EXIGIR (uma imposição da autoridade).", trueFact3: "Prevaricação é deixar de praticar ato de ofício por sentimento pessoal (dó, raiva).", falseFacts: ["Exigir dinheiro para não aplicar uma multa é crime de Corrupção Passiva.", "Peculato ocorre quando o cidadão comum rouba o patrimônio público.", "A Corrupção Passiva exige sempre que a vantagem seja efetivamente recebida."], exp: "Se a banca falar EXIGIU (carteirada) = Concussão. Se falou SOLICITOU/RECEBEU = Corrupção Passiva. Sentimento pessoal = Prevaricação." },
+                { topic: "Código de Trânsito (CTB)", trueFact: "Conduzir veículo com capacidade psicomotora alterada pelo álcool é infração gravíssima e crime.", trueFact2: "Ao Município compete autuar infrações de circulação, parada e estacionamento.", trueFact3: "A penalidade de suspensão do direito de dirigir é aplicável por acúmulo de pontos ou infrações específicas.", falseFacts: ["Dirigir embriagado configura apenas uma multa administrativa, mas nunca um crime.", "A GCM é totalmente proibida pelo STF de aplicar multas de trânsito em vias urbanas.", "O limite tolerado de álcool para não ser multado é de duas latas de cerveja."], exp: "O crime do Art. 306 e a infração do Art. 165 andam juntos se a capacidade psicomotora estiver alterada. A tolerância de álcool no Brasil (administrativa) é ZERO." },
+                { topic: "Estatuto das Guardas (Lei 13.022)", trueFact: "É princípio mínimo de atuação da GCM o patrulhamento preventivo (Art. 3º, III).", trueFact2: "As guardas atuarão pautadas pelo uso progressivo da força.", trueFact3: "A GCM deve atuar na proteção dos direitos humanos fundamentais e preservação da vida.", falseFacts: ["A GCM tem a função precípua de patrulhamento ostensivo de fronteiras.", "O uso de arma letal é o primeiro nível na escala do uso progressivo da força.", "O estatuto proíbe convênios entre a GCM e os órgãos de trânsito estadual."], exp: "Decorar o Art. 3º (Princípios). Palavra-chave da GCM: PREVENTIVO (não ostensivo). Uso da força: PROGRESSIVO (não imediato/letal)." }
+            ];
+
+            // Roda o motor gerador expandindo o banco de dados exponencialmente
+            buildProceduralQuestions("Língua Portuguesa", portData);
+            buildProceduralQuestions("Informática Básica", infoData);
+            buildProceduralQuestions("Administração e Atualidades", pubData);
+            buildProceduralQuestions("Legislação e Específicos", espData);
+            buildProceduralQuestions("Direito Penal", espData); // Reaproveitando os temas penais/legislação
+
+            // Adiciona as hardcoded que sobraram no código anterior
+            const factsPT = [
+                { tema: "Crase antes de verbos", c: "É rigorosamente proibida.", w: ["É facultativa.", "Depende da regência verbal.", "É obrigatória."], exp: "Não se admite crase antes de verbos, pois verbo não admite artigo feminino." },
+                { tema: "Acentuação (Novo Acordo)", c: "Ditongos abertos em paroxítonas perderam o acento (ex: Jiboia).", w: ["Oxítonas com ditongos abertos perderam o acento.", "A palavra herói não tem mais acento.", "Todos os hiatos perderam o acento."], exp: "Apenas paroxítonas (jiboia, ideia, assembleia) perderam o acento no ditongo aberto." },
+                { tema: "Concordância do verbo Fazer", c: "Indicando tempo decorrido, é impessoal e fica no singular.", w: ["Vai para o plural concordando com o tempo.", "Admite as duas formas livremente.", "Só é usado no plural em textos oficiais."], exp: "'Faz dois anos' é o correto. O verbo fazer para tempo decorrido não tem sujeito." },
+                { tema: "Coesão Anafórica", c: "Retoma um termo já expresso anteriormente no texto.", w: ["Antecipa um termo que ainda será dito.", "Aponta para fora do texto literário.", "Elimina o sujeito da oração para dar fluidez."], exp: "Anáfora (para trás) retoma. Catáfora (para frente) antecipa o termo." },
+                { tema: "Uso do Porquê (Final de frase)", c: "Usa-se 'por quê' com acento circunflexo.", w: ["Usa-se 'porque' junto e sem acento.", "Usa-se 'porquê' junto e com acento.", "Usa-se 'por que' separado e sem acento."], exp: "Antes de ponto (final de frase), o 'que' se torna tônico e recebe acento: por quê." },
+                { tema: "Partícula SE (Apassivadora)", c: "O verbo concorda com o sujeito paciente (ex: Vendem-se casas).", w: ["O verbo fica sempre impessoal e no singular.", "O verbo atua como índice de indeterminação.", "A frase deixa de possuir sujeito."], exp: "Sendo pronome apassivador (com verbo transitivo direto), o verbo concorda com a coisa (sujeito)." },
+                { tema: "Uso da Vírgula (Sujeito e Verbo)", c: "É proibido separar o sujeito do verbo com vírgula única.", w: ["É obrigatório separar o sujeito longo do verbo.", "É facultativo se a frase for muito extensa.", "A vírgula substitui a conjunção aditiva E."], exp: "Regra de ouro da sintaxe (S-V-C): não se separa Sujeito e Verbo com vírgula." },
+                { tema: "Concordância do verbo Haver", c: "No sentido de existir, fica sempre no singular (ex: Havia guardas).", w: ["Vai para o plural concordando com o objeto.", "É sempre facultativo no plural.", "Torna-se verbo de ligação."], exp: "Verbo haver no sentido de existir é verbo impessoal, logo, fica na 3ª do singular." },
+                { tema: "Crase Facultativa", c: "Ocorre antes de pronomes possessivos femininos (ex: minha, sua).", w: ["Antes de pronomes demonstrativos (esta, essa).", "Antes de verbos no particípio passado.", "Antes de substantivos masculinos indefinidos."], exp: "Macete: crase facultativa ocorre 'Até Minha Maria' (depois de Até, antes de possessivo feminino e nome próprio feminino)." },
+                { tema: "Interpretação vs Compreensão", c: "Compreensão foca no que ESTÁ escrito; interpretação no que se INFERE.", w: ["São exatamente a mesma coisa em provas objetivas.", "Interpretação é achar dados numéricos explícitos.", "Compreensão permite extrapolar opiniões do autor."], exp: "Compreensão (Segundo o texto, O autor afirma). Interpretação (Infere-se, Conclui-se)." }
+            ];
+            generateVariations("Língua Portuguesa", factsPT);
+
+            const factsInfo = [
+                { tema: "Atalho Win + L", c: "Bloqueia a sessão do usuário imediatamente.", w: ["Desliga o computador.", "Abre o Explorador de Arquivos.", "Mostra a Área de Trabalho limpa."], exp: "L significa 'Lock' (Bloquear). Atalho vital para segurança de informações na GCM." },
+                { tema: "Ransomware", c: "Malware que criptografa os dados e cobra resgate financeiro.", w: ["Vírus que queima a placa-mãe.", "Software inofensivo de monitoramento.", "Sistema de backup na nuvem criptografado."], exp: "Ransomware (Ransom = Resgate) sequestra os dados com criptografia pesada e exige pagamento." },
+                { tema: "Atalho Ctrl + Shift + Esc", c: "Abre o Gerenciador de Tarefas do Windows diretamente.", w: ["Abre a tela de bloqueio do sistema.", "Fecha a janela de comando atual.", "Alterna entre abas do navegador web."], exp: "Diferente do Ctrl+Alt+Del, este atalho abre direto a janela do Gerenciador de Tarefas." },
+                { tema: "Fórmula SOMA (:) no Excel", c: "Soma todo o intervalo contínuo (ex: de A1 ATÉ A5).", w: ["Soma apenas a primeira e última célula.", "Realiza a divisão dos valores das células.", "Faz a subtração em cascata dos valores."], exp: "O sinal de dois pontos (:) representa o operador de intervalo 'ATÉ'. O ponto e vírgula (;) representaria 'E'." },
+                { tema: "Backup Incremental", c: "Copia apenas os arquivos alterados desde o último backup.", w: ["Copia absolutamente todos os arquivos do disco rígido.", "Não permite restauração posterior sob nenhuma hipótese.", "É o tipo mais lento e pesado de cópia de segurança."], exp: "Por copiar apenas os incrementos (o que mudou), é o backup mais rápido de executar na rotina." },
+                { tema: "Memória RAM", c: "É volátil, perdendo os dados quando o computador é desligado.", w: ["Armazena arquivos permanentemente como um HD.", "Só funciona com acesso ativo à internet.", "Não permite gravação de dados, apenas leitura."], exp: "A RAM é a memória de trabalho do processador; só retém dados enquanto há energia (volátil)." },
+                { tema: "Phishing", c: "Golpe de engenharia social usado para roubar dados bancários.", w: ["Ataque de negação de serviço a servidores públicos.", "Vírus que se propaga automaticamente por rede sem fio.", "Técnica governamental de criptografia segura."], exp: "Phishing (Pescaria) engana o usuário (ex: e-mail falso de banco) para que ele mesmo entregue a senha." },
+                { tema: "Campo CCO no E-mail", c: "Oculta o endereço dos destinatários para os demais que receberam.", w: ["Envia a mensagem com urgência e prioridade máxima.", "Garante a criptografia militar do arquivo em anexo.", "Bloqueia automaticamente o email na caixa de spam do receptor."], exp: "CCO (Com Cópia Oculta) ou BCC em inglês, preserva a privacidade da lista de contatos." },
+                { tema: "Atalho Win + D", c: "Mostra ou oculta a Área de Trabalho minimizando todas as janelas.", w: ["Abre o painel de configurações de rede.", "Apaga definitivamente um arquivo ignorando a lixeira.", "Renomeia a pasta selecionada no explorador."], exp: "D significa 'Desktop' (Área de Trabalho). Atalho de privacidade imediata." },
+                { tema: "Navegação Privada (Anônima)", c: "Não salva o histórico, cookies e dados de sites após fechar a janela.", w: ["Garante anonimato total contra o provedor de internet e a PF.", "Impede que qualquer vírus ou malware infecte o computador.", "Bloqueia anúncios e pop-ups de forma nativa e absoluta."], exp: "A navegação anônima limpa os rastros localmente (no seu PC), mas o provedor de internet continua vendo seu tráfego." }
+            ];
+            generateVariations("Informática Básica", factsInfo);
+
+            const factsAdmin = [
+                { tema: "Princípio da Legalidade", c: "O agente público só pode fazer o que a lei expressamente autoriza.", w: ["Pode fazer tudo que a lei não proíbe (igual ao particular).", "A lei pode ser ignorada em emergências locais.", "Autoriza gastos ilimitados pelo prefeito."], exp: "Diferente do cidadão particular, o Estado só age com autorização ou determinação da Lei." },
+                { tema: "Princípio da Impessoalidade", c: "Proíbe a promoção pessoal e o nepotismo na Administração Pública.", w: ["Permite a contratação de parentes sem concurso para cargos base.", "Exige que os atos criminais sejam anônimos.", "Autoriza o favorecimento de aliados partidários."], exp: "O ato administrativo deve focar no interesse público de forma neutra, vedado o favorecimento (nepotismo) ou promoção do próprio gestor." },
+                { tema: "Princípio da Eficiência", c: "Busca os melhores resultados com o menor custo e sem desperdício.", w: ["Foi o primeiro princípio original a ser incluído na CF/88.", "Exige contratações sem limite orçamentário para garantir a excelência.", "É o único princípio que permite romper a legalidade."], exp: "Adicionado pela EC 19/98, foca no resultado prático, rendimento e otimização dos recursos." },
+                { tema: "Administração Indireta", c: "Formada por Autarquias, Fundações, Empresas Públicas e Sociedades de Economia Mista.", w: ["Formada unicamente por Ministérios e Secretarias Municipais.", "Não possui nenhum tipo de personalidade jurídica própria.", "É imune a qualquer auditoria ou controle do Tribunal de Contas."], exp: "A Administração Indireta (sigla FASE) possui personalidade jurídica própria, diferente da Administração Direta (União, Estados, Municípios)." },
+                { tema: "Princípio da Moralidade", c: "Exige atuação ética, proba, honesta e de boa-fé do agente público.", w: ["Afirma que todo ato que é legal é automaticamente e incontestavelmente moral.", "Aplica-se unicamente ao setor de licitações privadas.", "Dispensa totalmente a verificação de finalidade do ato público."], exp: "A legalidade formal não basta; o ato precisa ser ético e não lesivo à moralidade (nem tudo que é legal é moral)." },
+                { tema: "Princípio da Publicidade", c: "Garante a transparência dos atos, exceto os protegidos por sigilo.", w: ["Obriga a divulgação de 100% dos documentos governamentais sem exceção.", "É dispensável para contratos de alto valor emergencial.", "Refere-se apenas à propaganda de obras do governo na TV."], exp: "A regra é a transparência pública. A exceção é o sigilo, garantido para proteção da intimidade ou segurança do Estado." },
+                { tema: "Cargos em Comissão", c: "São de livre nomeação e livre exoneração, dispensando concurso.", w: ["Garantem estabilidade vitalícia após 3 anos de efetivo exercício.", "São exclusivos para funções puramente técnicas e braçais de base.", "Apenas parentes diretos do prefeito podem assumir essas vagas."], exp: "Destinam-se apenas às atribuições de direção, chefia e assessoramento (ad nutum), podendo o servidor ser demitido a qualquer momento." },
+                { tema: "Responsabilidade Civil do Estado", c: "É objetiva, respondendo o Estado pelos danos causados por seus agentes nessa qualidade.", w: ["É puramente subjetiva em todos e quaisquer casos no Brasil.", "Depende da comprovação de dolo direto do agente pela vítima do dano.", "Não se aplica aos prejuízos gerados por viaturas da Guarda Municipal."], exp: "Teoria do Risco Administrativo (Art. 37, §6º da CF). A vítima não precisa provar culpa, apenas o dano e o nexo causal." },
+                { tema: "Nepotismo (Súmula Vinculante 13)", c: "É a proibição da nomeação de parentes até o 3º grau para cargos de confiança.", w: ["Permite legalmente a contratação do cônjuge do prefeito sem restrições.", "É proibido apenas dentro da esfera do Poder Judiciário Federal.", "Aplica-se severamente aos servidores concursados efetivos de base."], exp: "O STF proibiu nomear cônjuge, companheiro ou parente (linha reta, colateral ou afinidade, até o 3º grau) para cargos de direção, chefia ou assessoramento." },
+                { tema: "Atos Administrativos (Atributos)", c: "Gozam de presunção de legitimidade e veracidade em sua origem.", w: ["São absolutamente irrevogáveis após serem publicados no diário oficial.", "Não podem ser anulados pelo Poder Judiciário, apenas pelo Executivo.", "Precisam de autorização prévia de um juiz estadual para terem validade."], exp: "Os atributos (P.A.I.) são Presunção de Legitimidade, Autoexecutoriedade e Imperatividade. O ato se presume válido até prova em contrário." }
+            ];
+            generateVariations("Administração e Atualidades", factsAdmin);
+
+            const factsPenal = [
+                { tema: "Roubo (Art. 157)", c: "Subtração de bem alheio mediante emprego de violência ou grave ameaça.", w: ["Subtração sorrateira sem que a vítima perceba a ação criminosa.", "Considerado crime de menor potencial ofensivo pelos juizados.", "Exige obrigatoriamente o concurso de duas ou mais pessoas para configurar."], exp: "A diferença primordial do Roubo para o Furto é a presença da VIOLÊNCIA ou da GRAVE AMEAÇA (coação) contra a vítima." },
+                { tema: "Concussão (Art. 316)", c: "O funcionário público EXIGE vantagem indevida, para si ou para outrem, em razão do cargo.", w: ["O funcionário solicita, com educação, vantagem ilícita do cidadão.", "O funcionário subtrai dinheiro público dos cofres da prefeitura.", "O funcionário retarda um auto de infração por preguiça ou dó."], exp: "Na concussão o núcleo do tipo penal é EXIGIR (uma 'carteirada' impositiva). Na corrupção passiva o verbo é SOLICITAR ou RECEBER." },
+                { tema: "Homicídio Funcional (Qualificado)", c: "Ocorre quando a vítima é agente da segurança pública (Art. 144) em serviço ou em decorrência dele.", w: ["É considerado um homicídio culposo com perdão judicial.", "Acarreta diminuição de pena por ser tratado como crime puramente militar.", "Aplica-se unicamente quando o crime é cometido contra juízes federais."], exp: "Matar GCM, PM, PC, PF (Art. 144) ou seus familiares até 3º grau em razão da função é homicídio qualificado e crime hediondo." },
+                { tema: "Legítima Defesa (Art. 25)", c: "Repelir injusta agressão, atual ou iminente, a direito seu ou de outrem, usando meios moderados.", w: ["Realizar um ataque preventivo dias antes que uma possível agressão ocorra.", "Permite excesso livre na reação sem punição, caso a vítima esteja muito assustada.", "Só pode ser invocada juridicamente por policiais e guardas fardados em serviço."], exp: "Excludente de ilicitude que exige: agressão injusta (atual/iminente), defesa de direito, uso de meios necessários e moderação." },
+                { tema: "Peculato-Apropriação (Art. 312)", c: "O servidor apropria-se de dinheiro, valor ou bem público de que tem a posse em razão do cargo.", w: ["O servidor exige dinheiro na rua para não multar o motorista.", "O servidor destrói uma viatura nova da corporação por raiva.", "O servidor prende alguém de forma flagrantemente ilegal e arbitrária."], exp: "No Peculato, o servidor usa a facilidade do seu cargo e a posse que tem do bem (como uma viatura ou arma) para apropriar-se ou desviar." },
+                { tema: "Corrupção Passiva (Art. 317)", c: "O funcionário público SOLICITA ou RECEBE, direta ou indiretamente, vantagem indevida.", w: ["O funcionário oferece ou promete vantagem indevida ao juiz.", "O funcionário furta pneus da viatura estacionada no pátio da delegacia.", "O funcionário exige sob ameaça de morte a entrega da bolsa da vítima."], exp: "Corrupção Passiva é praticada pelo funcionário (que solicita/recebe a propina). A Corrupção Ativa (Art. 333) é pelo cidadão particular (que oferece/promete)." },
+                { tema: "Prevaricação (Art. 319)", c: "Retardar ou deixar de praticar ato de ofício para satisfazer interesse ou sentimento pessoal.", w: ["Exigir dinheiro mediante PIX para rasgar uma multa de trânsito.", "Agredir um preso algemado dentro da cela prisional por vingança.", "Apropriar-se de munições do batalhão para vender no mercado paralelo."], exp: "O dolo específico da Prevaricação é o 'sentimento ou interesse pessoal' (ex: não multar um vizinho por amizade, ou por raiva, ou por preguiça)." },
+                { tema: "Furto (Art. 155)", c: "Subtração de coisa alheia móvel SEM violência ou grave ameaça à pessoa.", w: ["Uso de uma arma de brinquedo para tomar a carteira de um cidadão.", "Invasão de domicílio vazio sem a finalidade de subtrair nenhum bem.", "Sequestro rápido de uma pessoa para exigir resgate bancário instantâneo."], exp: "No crime de furto (como bater a carteira do bolso de alguém distraído ou roubar um carro na rua deserta) não há violência ou coação contra o dono." },
+                { tema: "Dolo vs Culpa", c: "No dolo o agente quer o resultado ou assume o risco; na culpa ele age com imprudência, negligência ou imperícia.", w: ["Na culpa o agente tem a intenção manifesta de ferir a vítima.", "A modalidade dolosa deixou de existir no novo Código Penal Militar.", "A negligência é a principal característica dos crimes preterdolosos complexos."], exp: "Dolo é intencional (vontade livre e consciente). Culpa ocorre por falta de cuidado (imprudência é afoiteza; negligência é omissão; imperícia é falta de técnica)." },
+                { tema: "Crime Consumado (Art. 14, I)", c: "Ocorre quando nele se reúnem todos os elementos de sua definição legal.", w: ["Ocorre apenas se o agente criminoso consegue fugir ileso do local do crime.", "Caracteriza-se quando a ação do agente dá errado por causas alheias à sua vontade.", "Só é considerado consumado se a vítima não reagir e for morta no ato."], exp: "Se a conduta realizada na vida real completou o verbo descrito na lei (ex: subtraiu e o bem saiu da esfera de proteção da vítima), o crime está consumado." }
+            ];
+            generateVariations("Direito Penal", factsPenal);
+
+            const factsLeg = [
+                { tema: "Princípio de Atuação da GCM (Lei 13.022)", c: "Patrulhamento preventivo e preservação da vida.", w: ["Patrulhamento ostensivo repressivo de fronteiras.", "Investigação criminal por meio de inquérito próprio.", "Execução direta e forçada de ordens de despejo federais."], exp: "A PM atua de forma ostensiva; a PC investiga; a GCM atua primordialmente de forma PREVENTIVA." },
+                { tema: "Constituição Federal (Art. 144)", c: "A segurança pública é dever do Estado, mas direito e responsabilidade de TODOS.", w: ["É um dever exclusivo e intransferível das Forças Armadas da União.", "A Guarda Municipal é proibida constitucionalmente de auxiliar na segurança.", "Os cidadãos civis não têm nenhuma responsabilidade no sistema de segurança."], exp: "A segurança é sistêmica e engloba o dever estatal e a cooperação da sociedade." },
+                { tema: "Maria da Penha (Tipos de Violência)", c: "Reconhece 5 formas: física, psicológica, sexual, patrimonial e moral.", w: ["Limita-se exclusivamente a coibir a agressão física comprovada por laudo.", "Não pune o controle financeiro (violência patrimonial) da esposa.", "Exige obrigatoriamente que o casal ainda more debaixo do mesmo teto."], exp: "A Lei 11.340 estruturou um leque de proteção integral para a mulher em contexto doméstico, familiar ou relação íntima de afeto." },
+                { tema: "Lei de Tortura (Efeitos da Condenação)", c: "A condenação acarreta a perda automática do cargo e a interdição pelo DOBRO do prazo da pena aplicada.", w: ["O crime torna-se afiançável caso o guarda ou policial seja réu primário.", "Não há previsão de perda do cargo na primeira condenação judicial.", "A interdição para o exercício do cargo público será de caráter perpétuo."], exp: "Efeito devastador do Art. 1º, §5º da Lei 9.455/97. É automático: perdeu o cargo e fica fora do serviço público pelo dobro do tempo." },
+                { tema: "Criação de GCM (Facultativa)", c: "A criação é uma prerrogativa facultativa ('poderão') dos municípios, não obrigatória.", w: ["É de criação obrigatória para cidades com população acima de 50 mil habitantes.", "Depende de autorização expressa e decreto do Governador do Estado.", "Sua constituição só é permitida em capitais e regiões metropolitanas ricas."], exp: "CF/88, Art. 144, § 8º: 'Os Municípios PODERÃO constituir guardas municipais...' É facultativo." },
+                { tema: "GCM e o Sistema de Segurança (STF)", c: "O STF definiu (ADPF 995) que as Guardas Municipais integram oficialmente o Sistema Único de Segurança Pública (SUSP).", w: ["O STF proibiu veementemente as GCMs de realizarem rondas táticas ou policiamento.", "O STF decidiu que GCMs existem apenas para cuidar de prédios e cemitérios municipais.", "O Supremo equiparou juridicamente a Guarda Municipal ao Exército Brasileiro na intervenção."], exp: "Jurisprudência pacificada: a GCM faz segurança pública de verdade, protegendo o cidadão e atuando nas vias, com base na ADPF 995." },
+                { tema: "Inafiançabilidade do crime de Tortura", c: "O crime de tortura é inafiançável e totalmente insuscetível de graça ou anistia.", w: ["Pode ser afiançado pelo Delegado de Polícia nas dependências da delegacia.", "Admite concessão de indulto natalino e perdão judicial presidencial pleno.", "Não é considerado um crime de natureza grave pela atual legislação brasileira."], exp: "Equiparado a crime hediondo pela Constituição Federal (Art. 5º, XLIII), a Tortura recebe o mais alto nível de severidade punitiva." },
+                { tema: "Lei de Trânsito - CTB (Embriaguez)", c: "Conduzir com a capacidade psicomotora alterada por álcool configura crime de trânsito.", w: ["É considerado apenas uma multa administrativa, sem repercussões penais ou prisões.", "O veículo irregular não pode ser retido pela autoridade de trânsito local.", "A pena máxima de restrição de liberdade aplicada será unicamente de prestação de serviços."], exp: "O Art. 306 do CTB tipifica como CRIME conduzir com capacidade psicomotora alterada, além da pesada infração administrativa (multa 10x)." },
+                { tema: "Estatuto da GCM (Uso da Força)", c: "A Guarda deve atuar sempre em obediência ao uso proporcional e progressivo da força.", w: ["A arma de fogo letal deve ser sempre a primeira opção para conter tumultos severos.", "O emprego forçado de algemas é de caráter obrigatório em absolutamente toda abordagem.", "A GCM não tem permissão legal para aplicar nenhum tipo de força física sobre civis."], exp: "Princípio mínimo contido no Art. 3º, V da Lei 13.022. O GCM começa com a presença, verbalização e escalona a força somente se necessário." },
+                { tema: "Medidas Protetivas (Lei Maria da Penha)", c: "Podem determinar o afastamento do agressor do lar e a proibição de aproximação da vítima.", w: ["Só podem ser concedidas definitivamente após o trânsito em julgado de uma ação penal condenatória.", "Sua validade e imposição dependem essencialmente de autorização prévia por escrito do agressor.", "São sumariamente revogadas caso a vítima mude seu endereço para outro estado do país."], exp: "As Medidas Protetivas de Urgência visam cessar o risco iminente de morte ou lesão à mulher, podendo ser aplicadas imediatamente." }
+            ];
+            generateVariations("Legislação e Específicos", factsLeg);
+        }
+
+        let currentQuizQuestions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let answersLog = [];
+
+        function generateUniqueQuestions(category) {
+            // Garante que o banco de 250 questões exclusivas foi populado
+            if (!window.dbPopulated) {
+                populateMassiveDatabase();
+                window.dbPopulated = true;
+            }
+
+            let pool = [];
+            if (category === 'todos') {
+                Object.values(baseQuizTemplates).forEach(arr => pool.push(...arr));
+            } else {
+                pool = baseQuizTemplates[category] || baseQuizTemplates["Língua Portuguesa"];
+            }
+
+            // MOTOR DE EMBARALHAMENTO (Fisher-Yates) - Garante aleatoriedade perfeita sem repetição
+            let shuffledPool = JSON.parse(JSON.stringify(pool));
+            for (let i = shuffledPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
+            }
+
+            // O Motor CORTA EXATAMENTE 50 questões únicas do topo do baralho. Nenhuma questão se repete na bateria de 50.
+            let finalQuestions = shuffledPool.slice(0, 50);
+            
+            // Embaralha as alternativas (A, B, C, D) DENTRO de cada questão para a posição da resposta certa variar
+            finalQuestions.forEach(base => {
+                let optsWithAns = base.options.map((opt, idx) => ({ text: opt, isCorrect: idx === base.correct }));
+                optsWithAns.sort(() => Math.random() - 0.5);
+                base.options = optsWithAns.map(o => o.text);
+                base.correct = optsWithAns.findIndex(o => o.isCorrect);
+            });
+
+            return finalQuestions;
+        }
+
+        // ---------------------------------------------------------------------
+        // 5. INTERAÇÃO E RENDERIZAÇÃO
+        // ---------------------------------------------------------------------
+        
+        // MODAL DE PDFs
+        window.openMaterialModal = (materialKey) => {
+            const material = materialsDatabase[materialKey];
+            if(material) {
+                document.getElementById('materialTitle').innerHTML = `<i class="fa-solid fa-book-open text-red-600 mr-2"></i> ${material.title}`;
+                document.getElementById('materialContent').innerHTML = material.content;
+                const modal = document.getElementById('materialModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                showModal("Atenção", "Material em processamento tático.", "fa-gears");
+            }
+        };
+
+        window.closeMaterial = () => {
+            const modal = document.getElementById('materialModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // MODAL DO SIMULADOR E LÓGICA DE FEEDBACK
+        window.openQuiz = (overrideFilter = null) => {
+            let filterValue = overrideFilter || document.getElementById('quizFilter').value;
+            if (overrideFilter && document.getElementById('quizFilter').querySelector(`option[value="${filterValue}"]`)) {
+                document.getElementById('quizFilter').value = filterValue;
+            }
+
+            // Usa a nova função que NÃO repete questões
+            currentQuizQuestions = generateUniqueQuestions(filterValue);
+            currentQIndex = 0;
+            score = 0;
+            answersLog = [];
+            
+            // O título agora reflete a quantidade real de questões únicas geradas
+            document.getElementById('quizModalTitle').innerHTML = `<i class="fa-solid fa-crosshairs mr-2"></i> TREINAMENTO IGEDUC - ${currentQuizQuestions.length} QUESTÕES INÉDITAS`;
+            document.getElementById('quizSubject').innerText = document.getElementById('quizFilter').options[document.getElementById('quizFilter').selectedIndex].text;
+            
+            document.getElementById('quizModal').classList.remove('hidden');
+            document.getElementById('quizModal').classList.add('flex');
+            renderQuizQuestion();
+        };
+
+        window.openDailyQuiz = (dateStr) => {
+            const modules = dailyModulesMap[dateStr];
+            if(!modules) {
+                showModal("Atenção", "Nenhum conteúdo específico encontrado para hoje.", "fa-circle-exclamation");
+                return;
+            }
+
+            // Puxa as questões específicas daquele dia (Sincronia Tática)
+            currentQuizQuestions = [];
+            modules.forEach(mod => {
+                if(mod.dailyQ) {
+                    mod.dailyQ.forEach(q => {
+                        let clone = JSON.parse(JSON.stringify(q));
+                        clone.text = `[Fixação Diária - ${mod.sub}] ${clone.text}`;
+                        currentQuizQuestions.push(clone);
+                    });
+                }
+            });
+
+            if(currentQuizQuestions.length === 0) {
+                showModal("Atenção", "Bateria em processamento para este módulo.", "fa-gears");
+                return;
+            }
+
+            // Randomizar as questões diárias para evitar decorar a ordem
+            currentQuizQuestions.sort(() => Math.random() - 0.5);
+
+            currentQIndex = 0;
+            score = 0;
+            answersLog = [];
+            
+            document.getElementById('quizModalTitle').innerHTML = `<i class="fa-solid fa-bolt mr-2"></i> BATERIA DE FIXAÇÃO DIÁRIA - ${currentQuizQuestions.length} QUESTÕES`;
+            document.getElementById('quizSubject').innerText = `Tópicos Estudados Hoje`;
+
+            document.getElementById('quizModal').classList.remove('hidden');
+            document.getElementById('quizModal').classList.add('flex');
+            renderQuizQuestion();
+        };
+
+        window.closeQuiz = () => {
+            document.getElementById('quizModal').classList.add('hidden');
+            document.getElementById('quizModal').classList.remove('flex');
+        };
+
+        function renderQuizQuestion() {
+            const q = currentQuizQuestions[currentQIndex];
+            document.getElementById('quizProgress').innerText = `Missão ${currentQIndex + 1} de ${currentQuizQuestions.length}`;
+            document.getElementById('quizQuestionText').innerHTML = q.text;
+            
+            const optsContainer = document.getElementById('quizOptions');
+            optsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 transition-colors text-gray-300 option-btn text-lg';
+                btn.innerHTML = `<span class="font-bold text-yellow-500 mr-3 text-xl">${String.fromCharCode(65 + idx)})</span> ${opt}`;
+                btn.onclick = () => handleAnswerSubmission(idx, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            document.getElementById('detailedFeedbackBox').classList.add('hidden');
+            document.getElementById('quizResultFooter').classList.add('hidden');
+            document.getElementById('btnNextQuiz').classList.add('hidden');
+            document.getElementById('btnFinishQuiz').classList.add('hidden');
+        }
+
+        window.handleAnswerSubmission = (selectedIndex, btnElement) => {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.onclick = null; // Desativa cliques após responder
+                btn.classList.add('opacity-70', 'cursor-default');
+                btn.classList.remove('hover:bg-slate-700');
+            });
+
+            const q = currentQuizQuestions[currentQIndex];
+            const isCorrect = selectedIndex === q.correct;
+            
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            answersLog.push({
+                questionText: q.text,
+                userAnswer: letters[selectedIndex],
+                correctAnswer: letters[q.correct],
+                isCorrect: isCorrect,
+                explanation: q.exp
+            });
+
+            if (isCorrect) {
+                btnElement.classList.replace('bg-slate-800', 'bg-green-900');
+                btnElement.classList.replace('border-slate-600', 'border-green-500');
+                btnElement.classList.remove('opacity-70');
+                btnElement.classList.add('text-white');
+                score++;
+            } else {
+                btnElement.classList.replace('bg-slate-800', 'bg-red-900');
+                btnElement.classList.replace('border-slate-600', 'border-red-500');
+                btnElement.classList.remove('opacity-70');
+                btnElement.classList.add('text-white');
+                
+                // Destaca a correta
+                buttons[q.correct].classList.replace('bg-slate-800', 'bg-green-900/50');
+                buttons[q.correct].classList.replace('border-slate-600', 'border-green-500');
+                buttons[q.correct].classList.add('text-green-300');
+            }
+
+            showDetailedFeedback(isCorrect, letters[selectedIndex], letters[q.correct], q.exp);
+
+            document.getElementById('quizResultFooter').classList.remove('hidden');
+            if (currentQIndex < currentQuizQuestions.length - 1) {
+                document.getElementById('btnNextQuiz').classList.remove('hidden');
+            } else {
+                document.getElementById('btnFinishQuiz').classList.remove('hidden');
+            }
+        };
+
+        function showDetailedFeedback(isCorrect, userLetter, correctLetter, explanation) {
+            const fbBox = document.getElementById('detailedFeedbackBox');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbExp = document.getElementById('feedbackExplanation');
+            
+            fbBox.classList.remove('hidden', 'bg-green-900/30', 'border-green-500', 'bg-red-900/30', 'border-red-500');
+            
+            if(isCorrect) {
+                fbBox.classList.add('bg-green-900/30', 'border-green-500');
+                fbTitle.innerHTML = `<i class="fa-solid fa-circle-check text-green-500 mr-2 text-2xl"></i> RESPOSTA CORRETA (Gabarito: ${correctLetter})`;
+                fbTitle.className = "font-bold text-xl mb-3 flex items-center text-green-400";
+            } else {
+                fbBox.classList.add('bg-red-900/30', 'border-red-500');
+                fbTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-500 mr-2 text-2xl"></i> RESPOSTA INCORRETA`;
+                fbTitle.className = "font-bold text-xl mb-3 flex items-center text-red-400";
+            }
+            
+            let expHtml = `
+                <div class="mb-3 text-sm border-b border-gray-600 pb-2">
+                    <span class="text-gray-400">Sua marcação:</span> <strong class="text-white">${userLetter}</strong> &nbsp;|&nbsp; 
+                    <span class="text-gray-400">Gabarito Oficial:</span> <strong class="text-white">${correctLetter}</strong>
+                </div>
+                <div class="mt-3"><strong class="text-yellow-500 uppercase tracking-wider text-sm">Justificativa Tática:</strong><br> ${explanation}</div>
+            `;
+            fbExp.innerHTML = expHtml;
+        }
+
+        window.nextQuizQuestion = () => {
+            currentQIndex++;
+            renderQuizQuestion();
+        };
+
+        window.finishQuizReport = () => {
+            closeQuiz();
+            const perc = (score / currentQuizQuestions.length) * 100;
+            
+            // Identifica a disciplina atual para dar o feedback correto
+            const currentSubject = document.getElementById('quizSubject').innerText;
+            let recommendedMaterial = "da Lei Seca e PDFs";
+            
+            if (currentSubject.includes("Informática")) {
+                recommendedMaterial = "dos resumos de Informática, atalhos do Windows e apostilas de Hardware/Software";
+            } else if (currentSubject.includes("Portugues") || currentSubject.includes("Língua Portuguesa")) {
+                recommendedMaterial = "das apostilas de Português, regras de crase e teoria de interpretação";
+            } else if (currentSubject.includes("Administração")) {
+                recommendedMaterial = "dos PDFs de Administração Pública e Princípios Constitucionais (LIMPE)";
+            } else if (currentSubject.includes("Geral")) {
+                recommendedMaterial = "da Lei Seca, PDFs e vídeo-aulas das disciplinas em déficit";
+            }
+            
+            // Define o Status do Desempenho com mensagem direcionada
+            let statusHtml = '';
+            if (perc >= 80) statusHtml = '<span class="text-green-500 font-bold bg-green-900/30 px-3 py-1 rounded border border-green-500"><i class="fa-solid fa-medal mr-2"></i> EXCELENTE. Nível de Prontidão Máximo para a GCM.</span>';
+            else if (perc >= 60) statusHtml = '<span class="text-yellow-500 font-bold bg-yellow-900/30 px-3 py-1 rounded border border-yellow-500"><i class="fa-solid fa-triangle-exclamation mr-2"></i> BOM. Mas não há espaço para conforto. Revise seus erros abaixo.</span>';
+            else statusHtml = `<span class="text-red-500 font-bold bg-red-900/30 px-3 py-1 rounded border border-red-500"><i class="fa-solid fa-skull-crossbones mr-2"></i> INSUFICIENTE. Volte imediatamente para a leitura ${recommendedMaterial}.</span>`;
+
+            // Constrói o cabeçalho do relatório
+            let reportHtml = `
+                <div class="text-center mb-8 border-b border-slate-700 pb-8">
+                    <h2 class="text-5xl font-tactical text-white mb-3">DESEMPENHO: <span class="${perc >= 60 ? 'text-green-500' : 'text-red-500'}">${score} / ${currentQuizQuestions.length}</span></h2>
+                    <h3 class="text-2xl text-gray-400 mb-6 font-tactical tracking-widest">APROVEITAMENTO: ${perc.toFixed(1)}%</h3>
+                    <p class="text-lg mb-4">${statusHtml}</p>
+                    <p class="text-sm text-gray-400 mt-4 italic">Abaixo está o detalhamento de cada missão. Copie as justificativas dos seus erros para as Anotações Táticas no painel principal.</p>
+                </div>
+                <div class="space-y-6">
+            `;
+
+            // Constrói a lista de erros e acertos com justificativas
+            answersLog.forEach((log, index) => {
+                const isCorrect = log.isCorrect;
+                const borderColor = isCorrect ? 'border-green-500' : 'border-red-500';
+                const bgColor = isCorrect ? 'bg-green-900/10' : 'bg-red-900/10';
+                const icon = isCorrect ? '<i class="fa-solid fa-circle-check text-green-500 text-2xl"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500 text-2xl"></i>';
+                
+                reportHtml += `
+                    <div class="p-6 rounded-lg border-l-4 ${borderColor} ${bgColor} shadow-md">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="mt-1 flex-shrink-0">${icon}</div>
+                            <div class="flex-1">
+                                <h4 class="text-white font-tactical text-lg mb-2">QUESTÃO ${index + 1}</h4>
+                                <p class="text-gray-200 text-sm leading-relaxed mb-4 font-semibold">${log.questionText}</p>
+                            </div>
+                        </div>
+                        <div class="ml-10 text-sm bg-slate-900 p-4 rounded border border-slate-700">
+                            <div class="mb-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <div><span class="text-gray-400">Sua marcação:</span> <strong class="${isCorrect ? 'text-green-400' : 'text-red-400'} text-lg">${log.userAnswer}</strong></div>
+                                ${!isCorrect ? `<div><span class="text-gray-400">Gabarito Correto:</span> <strong class="text-green-400 text-lg">${log.correctAnswer}</strong></div>` : ''}
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700">
+                                <strong class="text-yellow-500 uppercase text-xs tracking-widest"><i class="fa-solid fa-scale-balanced mr-1"></i> Justificativa Tática:</strong><br>
+                                <span class="text-gray-300 mt-2 block leading-relaxed">${log.explanation}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            reportHtml += `</div>`;
+            
+            document.getElementById('reportContent').innerHTML = reportHtml;
+            document.getElementById('reportModal').classList.remove('hidden');
+            document.getElementById('reportModal').classList.add('flex');
+        };
+
+        window.closeReport = () => {
+            document.getElementById('reportModal').classList.add('hidden');
+            document.getElementById('reportModal').classList.remove('flex');
+        };
+
+        // ---------------------------------------------------------------------
+        // 6. RENDERIZAÇÃO DA INTERFACE PRINCIPAL
+        // ---------------------------------------------------------------------
+        function renderDay(dateStr) {
+            const container = document.getElementById('scheduleContainer');
+            container.innerHTML = '';
+            const tasks = dynamicSchedule[dateStr] || [];
+            
+            tasks.forEach(task => {
+                const isChecked = userProgress[task.id] ? 'checked' : '';
+                const completedClass = isChecked ? 'opacity-50 line-through' : '';
+                
+                // Botão de Ação Dinâmico
+                let actionButtonHtml = '';
+                if(task.action.startsWith('http')) {
+                    actionButtonHtml = `<a href="${task.action}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-external-link-alt mr-2"></i> ACESSAR</a>`;
+                } else {
+                    actionButtonHtml = `<button onclick="${task.action}" class="bg-yellow-500 hover:bg-yellow-400 text-slate-900 px-4 py-2 rounded font-bold text-sm flex items-center transition-colors shadow-lg"><i class="fa-solid fa-bolt mr-2"></i> INICIAR</button>`;
+                }
+
+                const html = `
+                    <div class="glass-panel p-5 rounded-xl flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-l-4 border-yellow-500 transition-all duration-300 group">
+                        <div class="flex items-start gap-4 flex-1">
+                            <div class="mt-1 flex-shrink-0">
+                                <label class="flex items-center cursor-pointer relative">
+                                    <input type="checkbox" class="peer sr-only" onchange="toggleTask('${task.id}', this)" ${isChecked}>
+                                    <div class="w-8 h-8 rounded border-2 border-slate-500 flex items-center justify-center peer-checked:bg-yellow-500 peer-checked:border-yellow-500 transition-colors bg-slate-900">
+                                        <i class="fa-solid fa-check text-slate-900 opacity-0 peer-checked:opacity-100 transition-opacity font-bold"></i>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="${completedClass} flex-1" id="text-${task.id}">
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <span class="bg-slate-800 text-gray-300 text-xs px-2 py-1 rounded font-mono border border-slate-600"><i class="fa-regular fa-clock mr-1"></i>${task.time}</span>
+                                    <span class="text-xs uppercase tracking-wider font-bold text-slate-900 bg-yellow-500 px-2 py-1 rounded shadow-sm">${task.type}</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-white"><i class="fa-solid ${task.icon} mr-2 text-gray-400"></i>${task.subject}</h4>
+                                <p class="text-gray-300 text-sm mt-1 leading-relaxed">${task.topic}</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-auto flex justify-end">
+                            ${actionButtonHtml}
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+            updateChart();
+        }
+
+        daySelector.addEventListener('change', (e) => renderDay(e.target.value));
+
+        window.toggleTask = (taskId, checkbox) => {
+            const isChecked = checkbox.checked;
+            const textBlock = document.getElementById(`text-${taskId}`);
+            if(isChecked) { textBlock.classList.add('opacity-50', 'line-through'); } 
+            else { textBlock.classList.remove('opacity-50', 'line-through'); }
+
+            userProgress[taskId] = isChecked;
+            localStorage.setItem('gcm_trindade_progress_v3', JSON.stringify(userProgress));
+            updateChart();
+        };
+
+        // GRÁFICOS E UTILIDADES
+        let myChart = null;
+        function updateChart() {
+            let total = 0, completed = 0;
+            const stats = [0, 0, 0, 0];
+
+            Object.values(dynamicSchedule).forEach(day => {
+                day.forEach(task => {
+                    total++;
+                    if (userProgress[task.id]) {
+                        completed++;
+                        if(task.subject.includes("Portugu") || task.subject.includes("Inform")) stats[0] += 10;
+                        else if(task.subject.includes("Penal")) stats[1] += 10;
+                        else if(task.subject.includes("Legisla") || task.subject.includes("Admin")) stats[2] += 10;
+                        else stats[3] += 10;
+                    }
+                });
+            });
+
+            document.getElementById('statTotal').innerText = `${completed}/${total}`;
+            document.getElementById('statPercent').innerText = total ? `${Math.round((completed/total)*100)}%` : '0%';
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (myChart) {
+                myChart.data.datasets[0].data = stats;
+                myChart.update();
+            } else {
+                myChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Básicas', 'D. Penal', 'Legislação', 'Prática/Físico'],
+                        datasets: [{ data: stats, backgroundColor: 'rgba(234, 179, 8, 0.3)', borderColor: 'rgba(234, 179, 8, 1)', borderWidth: 2, pointBackgroundColor: '#fff' }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false, max: 100 }, grid: {color: 'rgba(255,255,255,0.1)'}, angleLines: {color: 'rgba(255,255,255,0.1)'} } }, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        window.showModal = (title, msg, icon) => {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('modalIcon').className = `fa-solid ${icon} text-4xl text-yellow-500 mb-4`;
+            document.getElementById('customModal').classList.remove('hidden');
+            document.getElementById('customModal').classList.add('flex');
+        };
+        window.closeModal = () => {
+            document.getElementById('customModal').classList.add('hidden');
+            document.getElementById('customModal').classList.remove('flex');
+        };
+
+        setInterval(() => {
+            const distance = new Date('2026-12-05T14:00:00').getTime() - new Date().getTime();
+            if (distance < 0) { document.getElementById("countdown").innerHTML = "A HORA CHEGOU!"; return; }
+            document.getElementById("countdown").innerHTML = `${Math.floor(distance / (1000 * 60 * 60 * 24))} DIAS`;
+        }, 1000);
+
+        // INIT
+        window.onload = () => {
+            const todayStr = new Date().toLocaleDateString('pt-BR');
+            const matchedOpt = Array.from(daySelector.options).find(opt => opt.value.includes(todayStr));
+            if (matchedOpt) daySelector.value = matchedOpt.value;
+            else daySelector.selectedIndex = 0;
+            renderDay(daySelector.value);
+        };
+    </script>
+</body>
+</html>
